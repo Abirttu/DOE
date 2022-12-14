@@ -1,0 +1,105 @@
+---
+title: "HW Week 12"
+author: "Md Ariful Haque Miah, Ayoola Ayodegi"
+date: "2022-11-19"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+Problem 7.12
+
+Model Equation:
+
+$Y_{ijklmn} = \mu+\alpha_i+\beta_j+(\alpha\beta)_{ij}+\gamma_k+(\alpha\gamma)_{ik}+(\beta\gamma)_{jk}+\delta_l+.........+(\alpha\beta\gamma\delta)_{ijkl}+\tau_m+\epsilon_{ijklmn}$
+
+
+Where, $\tau_m$ = Block effect and n = replicate
+
+ANOVA with Blocking
+
+```{r}
+library(GAD)
+A <- c(rep(-1,7),rep(1,7))
+B <- c(rep(-1,14),rep(1,14))
+C <- c(rep(-1,28),rep(1,28))
+D <- c(rep(-1,56),rep(1,56))
+Block <- c(rep(seq(1,7),16))
+obs <- c(10,18,14,12.5,19,16,18.5,0,16.5,4.5,17.5,20.5,17.5,33,4,6,1,14.5,12,14,5,0,10,34,11,25.5,21.5,0,0,0,18.5,19.5,16,15,11,
+         5,20.5,18,20,29.5,19,10,6.5,18.5,7.5,6,0,10,0,16.5,4.5,0,23.5,8,8,8,4.5,18,14.5,10,0,17.5,6,19.5,18,16,5.5,10,7,
+         36,15,16,8.5,0,0.5,9,3,41.5,39,6.5,3.5,7,8.5,36,8,4.5,6.5,10,13,41,14,21.5,10.5,6.5,0,15.5,24,16,0,0,0,4.5,1,4,6.5,18,
+         5,7,10,32.5,18.5,8)
+A <- as.fixed(A)
+B <- as.fixed(B)
+C <- as.fixed(C)
+D <- as.fixed(D)
+Block <- as.fixed(Block)
+dat <- data.frame(A,B,C,D,Block,obs)
+dat
+model <- aov(obs~(A*B*C*D)+Block,data=dat)
+summary(model)
+```
+When considering Block, P value's of Factor A and Factor B are less than $\alpha=0.05$ level of significance and hence the length of Putt (Factor A) and the type of putter (Factor B) are significant. All other remaining factors, their interaction terms and the Block are not significant based on their respective P value's.
+
+ANOVA without Blocking
+
+```{r}
+library(GAD)
+A <- c(rep(-1,7),rep(1,7))
+B <- c(rep(-1,14),rep(1,14))
+C <- c(rep(-1,28),rep(1,28))
+D <- c(rep(-1,56),rep(1,56))
+Block <- c(rep(seq(1,7),16))
+obs <- c(10,18,14,12.5,19,16,18.5,0,16.5,4.5,17.5,20.5,17.5,33,4,6,1,14.5,12,14,5,0,10,34,11,25.5,21.5,0,0,0,18.5,19.5,16,15,11,
+         5,20.5,18,20,29.5,19,10,6.5,18.5,7.5,6,0,10,0,16.5,4.5,0,23.5,8,8,8,4.5,18,14.5,10,0,17.5,6,19.5,18,16,5.5,10,7,
+         36,15,16,8.5,0,0.5,9,3,41.5,39,6.5,3.5,7,8.5,36,8,4.5,6.5,10,13,41,14,21.5,10.5,6.5,0,15.5,24,16,0,0,0,4.5,1,4,6.5,18,
+         5,7,10,32.5,18.5,8)
+A <- as.fixed(A)
+B <- as.fixed(B)
+C <- as.fixed(C)
+D <- as.fixed(D)
+Block <- as.fixed(Block)
+dat <- data.frame(A,B,C,D,Block,obs)
+dat
+model <- aov(obs~A*B*C*D,data=dat)
+summary(model)
+```
+When considering not to Block, P value's of Factor A and Factor B are less than $\alpha=0.05$ level of significance and hence the length of Putt (Factor A) and the type of putter (Factor B) are significant. All other remaining factors and their interaction terms are not significant based on their respective P value's.
+
+If Comparing between Block and not to Block- On both cases, the length of Putt (Factor A) and the type of putter (Factor B) are significant. Also P-value's on both cases (Block/not to Block) are pretty much similar. Also, when Blocking, value of SSE is smaller than the value of SSE (when not Blocking).
+
+Problem 7.20
+
+```{r}
+A <- c(-1,1)
+B <- c(rep(-1,2),rep(1,2))
+C <- c(rep(-1,4),rep(1,4))
+D <- c(rep(-1,8),rep(1,8))
+E <- c(rep(-1,16),rep(1,16))
+F <- c(rep(-1,32),rep(1,32))
+ABCF <- c(A*B*C*F)
+CDEF <- c(C*D*E*F)
+ABDE <- c(A*B*D*E)
+dat <- data.frame(A,B,C,D,E,F,ABCF,CDEF,ABDE)
+dat
+```
+
+Problem 7.21
+```{r}
+A <- c(-1,1)
+B <- c(rep(-1,2),rep(1,2))
+C <- c(rep(-1,4),rep(1,4))
+D <- c(rep(-1,8),rep(1,8))
+E <- c(rep(-1,16),rep(1,16))
+F <- c(rep(-1,32),rep(1,32))
+ABEF <- c(A*B*E*F)
+ABCD <- c(A*B*C*D)
+ACE <- c(A*C*E)
+BCF <- c(B*C*F)
+BDE <- c(B*D*E)
+CDEF <- c(C*D*E*F)
+ADF <- c(A*D*F)
+dat <- data.frame(A,B,C,D,E,F,ABEF,ABCD,ACE,BCF,BDE,CDEF,ADF)
+dat
+```
+

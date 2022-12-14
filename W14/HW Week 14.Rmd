@@ -1,0 +1,50 @@
+---
+title: "HW Week 14"
+author: "Md Ariful Haque Miah, Ayoola Ayodegi"
+date: "2022-12-04"
+output: html_document
+---
+Problem 14.3
+
+```{r}
+library(GAD)
+machine <- c(rep(1,8),rep(2,8),rep(3,8))
+spindle <- rep(c(rep(1,4),rep(2,4)),3)
+observation <- c(12,9,11,12,8,9,10,8,14,15,13,14,12,10,11,13,14,10,12,11,16,15,15,14)
+machine <- as.fixed(machine)
+spindle <- as.random(spindle)
+dat <- data.frame(machine,spindle,observation)
+dat
+model <- lm(observation~machine+spindle%in%machine,data=dat)
+gad(model)
+```
+
+Model Equation:
+Y-ijk = mu + alpha_i + beta_j(i) + e_ijk, where spindle is nested within machine.
+Hypothesis Test:
+
+Null H_0: alpha_i = 0 for all i
+Alternative H_a: alpha_i != 0 for some i
+
+Null H_0: beta_j(i) = 0 for all i,j
+Alternative H_a: beta_j(i) != 0 for some i,j
+
+From the summary we see that, the factor machine is not significant since P value (0.2915630) is higher than
+$\alpha = 0.05$ level of significance thus we fail to reject $H_0$.
+On the other hand, the factor spindle is nested within the factor machine is significant since P value (0.0004428) is lower than $\alpha = 0.05$ level of significance thus we reject $H_0$.
+
+Source Code:
+```{r eval=FALSE}
+library(GAD)
+machine <- c(rep(1,8),rep(2,8),rep(3,8))
+spindle <- rep(c(rep(1,4),rep(2,4)),3)
+observation <- c(12,9,11,12,8,9,10,8,14,15,13,14,12,10,11,13,14,10,12,11,16,15,15,14)
+machine <- as.fixed(machine)
+spindle <- as.random(spindle)
+dat <- data.frame(machine,spindle,observation)
+dat
+model <- lm(observation~machine+spindle%in%machine)
+gad(model)
+```
+
+

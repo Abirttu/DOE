@@ -1,0 +1,76 @@
+---
+title: "Flip Assignment 12"
+author: "Yashwanth Dommaraju, Gustavo Marin Paulon, Md Ariful Haque Miah"
+date: "2022-10-13"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+## Question 1 
+
+
+For the Latin Square become valid, the Latin letters should not repeat in each row and column.
+So, since it is a two-source of nuisance variability that is exactly the case, the Latin square is valid.
+
+## Question 2
+
+Since it is a two-block Latin Square (Latin Square), let's consider the following equation: 
+
+$$
+y_{ijk}=\mu+\tau_i+\beta_j+\alpha_k+\epsilon_{ijk}
+$$
+
+Where $\tau_i$ is the treatment effect, $\beta_j$ is the nuisance variability of the Batch (block one), $\alpha_k$ is the nuisance variability of the Days (block two) and $\epsilon_{ijk}$ is the random error.
+
+## Question 3
+
+The hypothesis of the statistics test is:
+
+$$
+H_o: \tau_i = 0 \;for \;all \;i \\
+H_a: \tau_i \neq 0 \;for \;some \;i \;(i=1,2,3,4,5)
+$$
+
+```{r}
+library(GAD)
+
+batch <- c(rep(1,5),rep(2,5),rep(3,5),rep(4,5),rep(5,5))
+day <- c(rep(seq(1,5),5))
+
+ing <- c("A","B","D","C","E",
+         "C","E","A","D","B",
+         "B","A","C","E","D",
+         "D","C","E","B","A",
+         "E","D","B","A","C")
+
+obs <- c(8,7,1,7,3,
+         11,2,7,3,8,
+         4,9,10,1,5,
+         6,8,6,6,10,
+         4,2,3,8,8)
+
+batch <- as.fixed(batch)
+day <- as.fixed(day)
+
+ing <- as.fixed(ing)
+
+data <- data.frame(batch,day,ing,obs)
+
+model <- aov(obs~batch+day+ing, data=data)
+
+summary(model)
+```
+
+Conclusion: Since the p-value of ingredients is lesser than alpha ($p-value_{ing}=0.000488 < \alpha$) we can reject $H_o$.
+
+Therefore, changing the ingredient can significantly change the reaction time of chemical process, because the treatment effect is different than zero.
+
+
+

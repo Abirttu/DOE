@@ -1,0 +1,252 @@
+# Problem 3.23
+ft1 <- c(17.6,18.9,16.3,17.4,20.1,21.6)
+ft2 <- c(16.9,15.3,18.6,17.1,19.5,20.3)
+ft3 <- c(21.4,23.6,19.4,18.5,20.5,22.3)
+ft4 <- c(19.3,21.1,16.9,17.5,18.3,19.8)
+dat <- data.frame(ft1,ft2,ft3,ft4)
+dat
+library(tidyr)
+library(dplyr)
+dat1 <- pivot_longer(dat,c(ft1,ft2,ft3,ft4))
+dat1
+colnames(dat1)<-c("Fluid Type","Life")
+dat1
+dat1$`Fluid Type` <- as.factor(dat1$`Fluid Type`)
+dat1$Life <- as.numeric(dat1$Life)
+str(dat1)
+model <- aov(dat1$Life~dat1$`Fluid Type`,data=dat1)
+summary(model)
+# Problem 3.23.(a)
+# Hypothesis
+# H0: u1=u2=u3=u4
+# Ha: at least one of the u(i) differs
+# u(i) = mean of the Fluid Type (i=1,2,3,4)
+# Since P-value (0.0525) > alpha so we fail to reject H0 at alpha = 0.05. 
+# There are no differences in fluid type, also the P-value is just slightly above 0.05, 
+# there is probably a difference in fluid type.
+# Problem 3.23.(b)
+library(agricolae)
+LSD.test(model,"dat1$`Fluid Type`",console = TRUE)
+# According to the LSD test, I would select fluid type 3 as the fluid type 3 is different from 
+# the others, and it’s mean life also exceeds the mean lives of the other three fluids.
+# Problem 3.23.(c)
+Life <- c(dat1$Life)
+str(Life)
+x <- c(rep(1,6),rep(2,6),rep(3,6),rep(4,6))
+boxplot(Life~x,xlab="Fluid Type",ylab="Life",main="Boxplot")
+meanx<-c(rep(mean(ft1),6),rep(mean(ft2),6),rep(mean(ft3),6),rep(mean(ft4),6))
+Type<-c(ft1,ft2,ft3,ft4)
+res<-Type-meanx
+qqnorm(res)
+qqline(res)
+plot(meanx,res,xlab="Fluid Type",ylab="Residual",
+     main="constant variance check")
+# From the basic analysis of variance assumptions, we see that the residuals have 
+# the same spread/disperse. Hence the variance is constant and there is nothing 
+# unusual in the residual plots.
+# From the qq plot, we see that the data appears to be normally distributed.
+# Hence our ANOVA assumptions are satisfied.
+# Problem 3.28
+m1 <- c(110,157,194,178)
+m2 <- c(1,2,4,18)
+m3 <- c(880,1256,5276,4355)
+m4 <- c(495,7040,5307,10050)
+m5 <- c(7,5,29,2)
+dat <- data.frame(m1,m2,m3,m4,m5)
+dat
+library(tidyr)
+library(dplyr)
+dat1 <- pivot_longer(dat,c(m1,m2,m3,m4,m5))
+dat1
+colnames(dat1)<-c("Material","Failure Time")
+dat1
+dat1$Material <- as.factor(dat1$Material)
+dat1$`Failure Time` <- as.numeric(dat1$`Failure Time`)
+str(dat1)
+model2 <- aov(dat1$`Failure Time`~dat1$Material,data=dat1)
+summary(model2)
+# Problem 3.28.(a)
+# Hypothesis
+# H0: u1=u2=u3=u4=u5
+# Ha: at least one of the u(i) differs
+# u(i) = mean of the Material (i=1,2,3,4,5)
+# Since P-value (0.00379) < alpha so we reject H0 at alpha = 0.05. 
+# No not all the five materials have the same effect on mean failure time.
+# at least one material is different.
+# Problem 3.28.(b)
+ft <- c(dat1$`Failure Time`)
+str(ft)
+x <- c(rep(1,4),rep(2,4),rep(3,4),rep(4,4),rep(5,4))
+boxplot(ft~x,xlab="Material",ylab="Failure Time",main="Boxplot")
+meanx<-c(rep(mean(m1),4),rep(mean(m2),4),rep(mean(m3),4),rep(mean(m4),4),rep(mean(m5),4))
+Material<-c(m1,m2,m3,m4,m5)
+res<-Material-meanx
+qqnorm(res)
+qqline(res)
+plot(meanx,res,xlab="Material",ylab="Residual",
+     main="constant variance check")
+# The plot of residuals versus predicted indicates the variance of the original observations 
+# is not constant. The normal probability plot also indicates that the normality assumption 
+# is not valid. Boxcox transformation is needed.
+# Problem 3.28.(c)
+library(MASS)
+m1 <- c(110,157,194,178)
+m2 <- c(1,2,4,18)
+m3 <- c(880,1256,5276,4355)
+m4 <- c(495,7040,5307,10050)
+m5 <- c(7,5,29,2)
+dat <- data.frame(m1,m2,m3,m4,m5)
+dat
+library(tidyr)
+library(dplyr)
+dat1 <- pivot_longer(dat,c(m1,m2,m3,m4,m5))
+dat1
+colnames(dat1)<-c("Material","Failure Time")
+dat1
+dat1$Material <- as.factor(dat1$Material)
+dat1$`Failure Time` <- as.numeric(dat1$`Failure Time`)
+str(dat1)
+boxplot(dat1$`Failure Time`~dat1$Material,xlab="Material",ylab="Failure Time",main="Boxplot")
+boxcox(dat1$`Failure Time`~dat1$Material,data=dat1)
+# lambda=1 is not within 95% CI so we can go ahead to do boxcox transformations
+y <- log(dat1$`Failure Time`)
+head(y)
+boxplot(y~dat1$Material,xlab="Material",ylab="Failure Time",main="Boxplot")
+model3 <- aov(y~dat1$Material,data=dat1)
+summary(model3)
+plot(model3)
+# Since P-value (1.18e-07) < alpha so we reject H0 at alpha = 0.05. 
+# No not all the five materials have the same effect on mean failure time.
+# at least one material is different.
+# After doing natural log transformation, we see that there is nothing unusual in the 
+# NPP and the residual plots so ANOVA assumptions are adequate with normal distribution 
+# and constant variance.
+# Problem 3.29
+m1 <- c(31,10,21,4,1)
+m2 <- c(62,40,24,30,35)
+m3 <- c(53,27,120,97,68)
+dat <- data.frame(m1,m2,m3)
+dat
+library(tidyr)
+library(dplyr)
+dat1 <- pivot_longer(dat,c(m1,m2,m3))
+dat1
+colnames(dat1)<-c("Method","Count")
+dat1
+dat1$Method <- as.factor(dat1$Method)
+dat1$Count <- as.numeric(dat1$Count)
+str(dat1)
+model3 <- aov(dat1$Count~dat1$Method,data=dat1)
+summary(model3)
+# Problem 3.29.(a)
+# Hypothesis
+# H0: u1=u2=u3
+# Ha: at least one of the u(i) differs
+# u(i) = mean of the Method (i=1,2,3)
+# Since P-value (0.00643) < alpha so we reject H0 at alpha = 0.05. 
+# No not all the methods have the same effect on mean particle count.
+# at least one method is different.
+# Problem 3.29.(b)
+count <- c(dat1$Count)
+str(count)
+x <- c(rep(1,5),rep(2,5),rep(3,5))
+boxplot(count~x,xlab="Method",ylab="Count",main="Boxplot")
+meanx<-c(rep(mean(m1),5),rep(mean(m2),5),rep(mean(m3),5))
+Method<-c(m1,m2,m3)
+res<-Method-meanx
+qqnorm(res)
+qqline(res)
+plot(meanx,res,xlab="Method",ylab="Residual",
+     main="constant variance check")
+# The plot of residuals versus predicted response indicates the variance of the original observations 
+# is not constant. The normal probability plot indicates that the data is approximately 
+# normally distributed. So, Boxcox transformation is needed and then testing the 
+# hypothesis for adequacy of ANOVA.
+# Problem 3.29.(c)
+library(MASS)
+m1 <- c(31,10,21,4,1)
+m2 <- c(62,40,24,30,35)
+m3 <- c(53,27,120,97,68)
+dat <- data.frame(m1,m2,m3)
+dat
+library(tidyr)
+library(dplyr)
+dat1 <- pivot_longer(dat,c(m1,m2,m3))
+dat1
+colnames(dat1)<-c("Method","Count")
+dat1
+dat1$Method <- as.factor(dat1$Method)
+dat1$Count <- as.numeric(dat1$Count)
+str(dat1)
+boxplot(dat1$Count~dat1$Method,xlab="Method",ylab="Count",main="Boxplot")
+boxcox(dat1$Count~dat1$Method,data=dat1)
+# lambda=1 is not within 95% CI so we can go ahead to do boxcox transformations
+y <- (dat1$Count)^0.4
+head(y)
+boxplot(y~dat1$Method,xlab="Method",ylab="Count",main="Boxplot")
+model4 <- aov(y~dat1$Method,data=dat1)
+summary(model4)
+plot(model4)
+# Since P-value (0.00291) < alpha so we reject H0 at alpha = 0.05. 
+# No not all the methods have the same effect on mean particle count.
+# at least one method is different.
+# After doing Boxcox transformation, we see that there is nothing unusual in the 
+# residual and NPP plots so ANOVA assumptions are adequate with normal distribution 
+# and constant variance.
+# Problem 3.51
+ft1 <- c(17.6,18.9,16.3,17.4,20.1,21.6)
+ft2 <- c(16.9,15.3,18.6,17.1,19.5,20.3)
+ft3 <- c(21.4,23.6,19.4,18.5,20.5,22.3)
+ft4 <- c(19.3,21.1,16.9,17.5,18.3,19.8)
+dat <- data.frame(ft1,ft2,ft3,ft4)
+dat
+library(tidyr)
+library(dplyr)
+dat1 <- pivot_longer(dat,c(ft1,ft2,ft3,ft4))
+dat1
+colnames(dat1)<-c("Fluid Type","Life")
+dat1
+dat1$`Fluid Type` <- as.factor(dat1$`Fluid Type`)
+dat1$Life <- as.numeric(dat1$Life)
+str(dat1)
+model <- aov(dat1$Life~dat1$`Fluid Type`,data=dat1)
+summary(model)
+kruskal.test(dat1$Life~dat1$`Fluid Type`,data=dat1)
+# Hypothesis
+# H0: u1=u2=u3=u4
+# Ha: at least one of the u(i) differs
+# u(i) = mean of the Fluid Type (i=1,2,3,4)
+# In ANOVA, we see that P-value (0.0525) > alpha so we fail to reject H0 at alpha = 0.05. 
+# In Kruskal-Wallis Test, we again see that P-value (0.1015) > alpha so we fail to 
+# reject H0 again at alpha = 0.05
+# Hence, from both ANOVA and Kruskal-Wallis Test we conclude that
+# there are no differences in fluid type. This agrees with the analysis of variance.
+# Problem 3.52
+cd1 <- c(19,20,19,30,8)
+cd2 <- c(80,61,73,56,80)
+cd3 <- c(47,26,25,35,50)
+cd4 <- c(95,46,83,78,97)
+dat <- data.frame(cd1,cd2,cd3,cd4)
+dat
+library(tidyr)
+library(dplyr)
+dat1 <- pivot_longer(dat,c(cd1,cd2,cd3,cd4))
+dat1
+colnames(dat1)<-c("Circuit Design","Noise Observed")
+dat1
+dat1$`Circuit Design` <- as.factor(dat1$`Circuit Design`)
+dat1$`Noise Observed` <- as.numeric(dat1$`Noise Observed`)
+str(dat1)
+model <- aov(dat1$`Noise Observed`~dat1$`Circuit Design`,data=dat1)
+summary(model)
+kruskal.test(dat1$`Noise Observed`~dat1$`Circuit Design`,data=dat1)
+# Hypothesis
+# H0: u1=u2=u3=u4
+# Ha: at least one of the u(i) differs
+# u(i) = mean of the circuit design type (i=1,2,3,4)
+# In ANOVA, we see that P-value (6.8e-06) < alpha so we reject H0 at alpha = 0.05. 
+# In Kruskal-Wallis Test, we again see that P-value (0.001877) < alpha so we 
+# reject H0 again at alpha = 0.05
+# Hence, from both ANOVA and Kruskal-Wallis Test we conclude that the amount of noise present
+# in all four circuit designs are different. This agrees with the analysis of variance.
+

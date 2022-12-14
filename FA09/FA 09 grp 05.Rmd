@@ -1,0 +1,81 @@
+---
+title: "FA 09 grp 5"
+author: "Md Ariful Haque Miah"
+date: "9/29/2022"
+output:
+  html_document:
+    df_print: paged
+---
+```{r}
+library(pwr)
+sqrt(1/4.5)
+pwr.anova.test(k=4,n=NULL,f=0.471,sig.level = 0.05,power =0.80)
+
+# Ans to the ques 1.(a).
+# 14 samples of each fluid we will need to be collected 
+
+sqrt(.5^2/4.5)
+pwr.anova.test(k=4,n=NULL,f=0.2357,sig.level = 0.05,power =0.80)
+
+# Ans to the ques 1.(b).
+# 51 samples of each fluid we will need to be collected 
+
+
+type1 <- c(17.6,	18.9,	16.3,	17.4,	20.1,	21.6)
+type2	<- c(16.9,	15.3,	18.6,	17.1,	19.5,	20.3)
+type3	<- c(21.4,	23.6,	19.4,	18.5,	20.5,	22.3)
+type4 <- c(19.3,	21.1,	16.9,	17.5,	18.3,	19.8)
+
+dat <- data.frame(type1,type2,type3,type4)
+f <- (1)^2/(2.0447)^2
+
+pwr.anova.test(k=4,n=6,f,sig.level = .1,power =NULL)
+
+# Ans to the ques 2.(a).
+# The power will be 0.213476 for a hypothesis test with an alpha = 0.10 level 
+# of significance 
+
+library(tidyr)
+fluidsample<-pivot_longer(data = dat, c(type1,type2,type3,type4))
+aov.model<-aov(value~name, data = fluidsample)
+summary(aov.model)
+
+# Ans to the ques 2.(b).
+# Since p value = 0.0525 is less than alpha = 0.1, so we reject null hypothesis.
+
+plot(aov.model)
+
+# Ans to the ques 2.(c).
+# From the plot, it seems like Normality assumption is satisfied.
+# The model is adequate.
+
+
+TukeyHSD(aov.model, conf.level = 0.9)
+plot(TukeyHSD(aov.model, conf.level = 0.9))
+
+# Ans to the ques 2.(d).
+# Type 2 and Type 3 fluid significantly differs 
+```
+Source Code
+```{r eval=FALSE}
+library(pwr)
+sqrt(1/4.5)
+pwr.anova.test(k=4,n=NULL,f=0.471,sig.level = 0.05,power =0.80)
+sqrt(.5^2/4.5)
+pwr.anova.test(k=4,n=NULL,f=0.2357,sig.level = 0.05,power =0.80)
+type1 <- c(17.6,	18.9,	16.3,	17.4,	20.1,	21.6)
+type2	<- c(16.9,	15.3,	18.6,	17.1,	19.5,	20.3)
+type3	<- c(21.4,	23.6,	19.4,	18.5,	20.5,	22.3)
+type4 <- c(19.3,	21.1,	16.9,	17.5,	18.3,	19.8)
+dat <- data.frame(type1,type2,type3,type4)
+f <- (1)^2/(2.0447)^2
+pwr.anova.test(k=4,n=6,f,sig.level = .1,power =NULL)
+library(tidyr)
+fluidsample<-pivot_longer(data = dat, c(type1,type2,type3,type4))
+aov.model<-aov(value~name, data = fluidsample)
+summary(aov.model)
+plot(aov.model)
+TukeyHSD(aov.model, conf.level = 0.9)
+plot(TukeyHSD(aov.model, conf.level = 0.9))
+```
+

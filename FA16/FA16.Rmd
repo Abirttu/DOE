@@ -1,0 +1,59 @@
+---
+title: "FA16"
+output: html_document
+date: "2022-11-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Input Data
+
+```{r}
+library(DoE.base)
+A <- c(-1,1)
+B <- c(rep(-1,2),rep(1,2))
+C <- c(rep(-1,4),rep(1,4))
+D <- c(rep(-1,8),rep(1,8))
+obs <- c(12,18,13,16,17,15,20,15,10,25,13,24,19,21,17,23)
+dat <- data.frame(A,B,C,D,obs)
+dat
+mod <- lm(obs~A*B*C*D,data=dat)
+halfnormal(mod)
+```
+
+## Item a
+
+From the plots, the factors A, D, A:C, and A:D are significant since they do not follow a normal line. In other words, they do not behave like a random error.
+
+## Item b
+
+### Hypothesis
+
+$$
+H_o: \alpha\delta_{im}=0 \\ H_a: \alpha\delta_{im}\neq0 
+$$
+
+$$
+H_o: \alpha\gamma_{il}=0 \\ H_a: \alpha\gamma_{il}\neq0 
+$$
+
+Where, $\alpha$ is the main effect of A, $\gamma$ is the main effect of C, $\delta$ is the main effect of D.
+
+### Hypothesis Testing
+
+```{r}
+mod2 <- lm(obs~A+C+D+A*C+A*D,data=dat)
+
+summary(mod2)
+```
+
+From the test, we can assure now that the terms that remain the linear model equation, whiche are only five out of sixteen (A,C,D,A:C,A:D), are significant. All the p-values are lesser than alpha ($\alpha=0.05$).
+
+```{r}
+mod3 <- aov(obs~A+C+D+A*C+A*D,data=dat)
+
+summary(mod3)
+```
+

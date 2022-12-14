@@ -1,0 +1,24 @@
+---
+title: "FA15"
+author: "Md Ariful Haque Miah, Imtiaz Qavi, Mahesh Andiboina"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r}
+A <- c(rep(-1,3),rep(1,3))
+B <- c(rep(-1,6),rep(1,6))
+AB <- c(A*B)
+C <- c(rep(-1,12),rep(1,12))
+AC <- c(A*C)
+BC <- c(B*C)
+ABC <- c(A*B*C)
+obs <- c(22,31,25,32,43,29,35,34,50,55,47,46,44,45,38,40,37,36,60,50,54,39,41,47)
+dat <- data.frame(A,B,AB,C,AC,BC,ABC,obs)
+dat
+mod <- lm(obs~A*B*C,data=dat)
+coef(mod)
+summary(mod)
+mod2 <- aov(obs~A*B*C,data=dat)
+summary(mod2)
+```
+

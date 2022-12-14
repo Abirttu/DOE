@@ -1,0 +1,64 @@
+# Answer to the problem 2.32.(b).
+Inspector <- c (1:12)
+Caliper1 <- c(0.265,0.265,0.266,0.267,0.267,0.265,0.267,0.267,0.265,0.268,0.268,0.265)
+Caliper2 <- c(0.264,0.265,0.264,0.266,0.267,0.268,0.264,0.265,0.265,0.267,0.268,0.269)
+Inspector <- as.character(Inspector)
+Caliper1 <- as.numeric(Caliper1)
+Caliper2 <- as.numeric(Caliper2)
+dat <- data.frame(Inspector,Caliper1,Caliper2)
+dat
+str(dat)
+t.test(dat$Caliper1,dat$Caliper2,paired=TRUE,alternative = c("two.sided"))
+# P-value is 0.67
+
+# Answer to the problem 2.34.(b).
+grider <- c("S1/1","S2/1","S3/1","S4/1","S5/1","S2/1","S2/2","S2/3","S2/4")
+Kmethod <- c(1.186,1.151,1.322,1.339,1.200,1.402,1.365,1.537,1.559)
+Lmethod <- c(1.061,0.992,1.063,1.062,1.065,1.178,1.037,1.086,1.052)
+grider <- as.factor(grider)
+Kmethod <- as.numeric(Kmethod)
+Lmethod <- as.numeric(Lmethod)
+dat <- data.frame(grider,Kmethod,Lmethod)
+dat
+str(dat)
+t.test(dat$Kmethod,dat$Lmethod,paired=TRUE,alternative = c("two.sided"))
+# P-value is 0.0002953
+
+# Answer to the problem 2.34.(d).
+qqnorm(dat$Kmethod,main="Karlsruhe Method")
+qqline(dat$Kmethod)
+qqnorm(dat$Lmethod,main = "Lehigh Method")
+qqline(dat$Lmethod)
+# If we ignore some outliers especially from Lehigh Method then both the sample's
+# are approximately normally distributed. Since, almost all points fall 
+# on a straight line.
+
+# Answer to the problem 2.34.(e).
+qqnorm(dat$Kmethod-dat$Lmethod,main="Difference of NPP between two methods")
+qqline(dat$Kmethod-dat$Lmethod)
+# If we ignore some outliers for the diffrence in ratios of the two method's
+# then it is approximately normally distributed. Since, almost all points fall 
+# on a straight line.
+
+# Answer to the problem 2.34.(f).
+# As in any t-test, the assumption of normality is of only little importance. 
+# In the paired t-test, the assumption of normality applies to the distribution 
+# of the differences. That is, the individual sample measurements do not have 
+# to be normally distributed, but their difference.
+
+# Answer to the problem 2.29.(e).
+Temp95 <- c(11.176,7.089,8.097,11.739,11.291,10.759,6.467,8.315)
+Temp100 <- c(5.263,6.748,7.461,7.015,8.133,7.418,3.772,8.963)
+dat <- data.frame(Temp95,Temp100)
+dat
+# Normality assumptions check
+qqnorm(dat$Temp95,main="Normal Probability Plot Temp95",col="blue",ylab="95 degree celcius")
+qqline(dat$Temp95)
+qqnorm(dat$Temp100,main="Normal Probability Plot Temp100",col="red",ylab="100 degree celcius")
+qqline(dat$Temp100)
+# No significant deviations been observed from both (Temp 95 and Temp 100) of the 
+# the normality assumptions.
+
+# Answer to the problem 2.29.(f).
+library(pwr)
+pwr.t.test(n=8,d=1.34,sig.level = 0.05,power = NULL,type = c("two.sample"), alternative = c("two.sided"))

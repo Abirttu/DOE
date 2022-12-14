@@ -1,0 +1,252 @@
+---
+title: "FA 14 Group 2"
+output: html_document
+date: "2022-11-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 01
+
+### Reading the data
+
+```{r}
+library(GAD)
+
+dat <- read.csv("https://raw.githubusercontent.com/tmatis12/datafiles/main/PowderProduction.csv")
+```
+
+### Item a
+
+The equation for a three factor analysis is the following:
+
+$$
+y_{ijlk}=\mu+\alpha_i+\beta_j+\gamma_l+\alpha\beta_{ij}+\alpha\gamma_{il}+\beta\gamma_{jl}+\alpha\beta\gamma_{ijl}+\epsilon_{ijlk}
+$$
+
+### Item b
+
+#### Hypothesis
+
+The hypothesis that we are trying to reject are the following (not in order of relevance):
+
+$$
+Ho: \alpha\beta\gamma_{ijl}= 0\\
+Ha: \alpha\beta\gamma_{ijl}\neq 0
+$$
+
+$$
+Ho: \alpha\beta_{ij}= 0\\
+Ha: \alpha\beta_{ij}\neq 0
+$$
+
+$$
+Ho: \beta\gamma_{jl}= 0\\
+Ha: \beta\gamma_{jl}\neq 0
+$$
+
+$$
+Ho: \alpha\gamma_{il}= 0\\
+Ha: \alpha\gamma_{il}\neq 0
+$$
+
+$$
+Ho: \alpha_{i}= 0\\
+Ha: \alpha_{i}\neq 0
+$$
+
+$$
+Ho: \beta_{j}= 0\\
+Ha: \beta_{j}\neq 0
+$$
+
+$$
+Ho: \gamma_{l}= 0 \\
+Ha: \gamma_{l}\neq 0
+$$
+
+#### Preparing the data
+
+```{r}
+dat$Ammonium <- as.fixed(dat$Ammonium)
+dat$StirRate <- as.fixed(dat$StirRate)
+dat$Temperature <- as.fixed(dat$Temperature)
+```
+
+#### Statistical Analysis
+
+To test our hypothesis, let's perform the following:
+
+##### Testing the three factor interaction
+
+$$
+Ho: \alpha\beta\gamma_{ijl}= 0\\
+Ha: \alpha\beta\gamma_{ijl}\neq 0
+$$
+
+```{r}
+model.aov <- aov(Density~Ammonium+StirRate+Temperature+Ammonium*StirRate+Ammonium*Temperature+StirRate*Temperature+Ammonium*StirRate*Temperature, data=dat)
+summary(model.aov)
+```
+
+From the results above, it we cannot reject Ho, since the p-value is greater than $\alpha$. Therefore, the interaction between the three factors is not significant.
+
+Now, let's test the least significant effect in order to validate the two factors interaction by removing the three factor interaction.
+
+##### Testing alpha and gamma interaction
+
+$$
+Ho: \alpha\gamma_{il}= 0\\
+Ha: \alpha\gamma_{il}\neq 0
+$$
+
+```{r}
+model.aov <- aov(Density~Ammonium+StirRate+Temperature+Ammonium*StirRate+Ammonium*Temperature+StirRate*Temperature, data=dat)
+summary(model.aov)
+```
+
+Since the p-value is greater than $\alpha$, we cannot reject Ho. Therefore, we need to check the next least significant interaction by removing alpha gamma interation.
+
+##### Testing beta gamma interaction
+
+$$
+Ho: \beta\gamma_{jl}= 0\\
+Ha: \beta\gamma_{jl}\neq 0
+$$
+
+```{r}
+model.aov <- aov(Density~Ammonium+StirRate+Temperature+Ammonium*StirRate+StirRate*Temperature, data=dat)
+summary(model.aov)
+```
+
+Since the p-value is greater than $\alpha$, we cannot reject Ho. Therefore, we need to test the last two factor interaction to see its relevance by removing beta gamma interaction.
+
+##### Testing alpha beta interaction 
+
+$$
+Ho: \alpha\beta_{ij}= 0\\
+Ha: \alpha\beta_{ij}\neq 0
+$$
+
+```{r}
+model.aov <- aov(Density~Ammonium+StirRate+Temperature+Ammonium*StirRate, data=dat)
+summary(model.aov)
+```
+
+Since the p-value of the last two factor interaction is lesser than $\alpha$ ($p-value=0.022<\alpha=0.05$), we can reject Ho and consider that there is a significant interaction between the Ammonium percentage and the Stir Rate.
+
+Since there is an interaction going on, we can check the plot by
+
+```{r}
+interaction.plot(dat$StirRate,dat$Ammonium,dat$Density)
+
+```
+
+From the plot, since the curves are not parallel, we can confirm the interaction between the two factors.
+
+## Question 02
+
+### Part a
+
+$$
+Ho: \alpha\beta_{ij}=0 \\
+Ha: \alpha\beta_{ij}\neq0
+$$
+
+```{r}
+library(GAD)
+position <- c(rep(1,9),rep(2,9))
+temperature <- c(rep(seq(800,850,25),6))
+response <- c(570,	1063,	565,
+              565,	1080,	510,
+              583,	1043,	590,
+              528,	988,	526,
+              547,	1026,	538,
+              521,	1004,	532)
+position <- as.fixed(position)
+temperature <- as.fixed(temperature)
+dat <- data.frame(position,temperature,response)
+dat
+model1 <- aov(response~position+temperature+position*temperature,data=dat)
+gad(model1)
+interaction.plot(temperature,position,response)
+```
+
+P value of the interaction is 0.427110 which is larger than $\alpha = 0.05$ level of significance, so we don't reject H0 hence there is no two factors interaction present. Also p value for the position and temperature is 0.001762 and 3.25e-14 respectively.
+
+### Part b
+
+$$
+Ho: \alpha\beta_{ij}=0 \\
+Ha: \alpha\beta_{ij}\neq0
+$$
+
+```{r}
+library(GAD)
+position <- c(rep(1,9),rep(2,9))
+temperature <- c(rep(seq(800,850,25),6))
+response <- c(570,	1063,	565,
+              565,	1080,	510,
+              583,	1043,	590,
+              528,	988,	526,
+              547,	1026,	538,
+              521,	1004,	532)
+position <- as.random(position)
+temperature <- as.random(temperature)
+dat2 <- data.frame(position,temperature,response)
+dat2
+model2 <- aov(response~position+temperature+position*temperature,data=dat2)
+gad(model2)
+```
+
+P value of the interaction is 0.4271101 which is larger than $\alpha = 0.05$ level of significance, so we don't reject H0 hence there is no two factors interaction present. Also p value for the position and temperature is 0.0526583 and 0.0008647 respectively.
+
+### Part c
+
+$$
+Ho: \alpha\beta_{ij}=0 \\
+Ha: \alpha\beta_{ij}\neq0
+$$
+
+```{r}
+library(GAD)
+position <- c(rep(1,9),rep(2,9))
+temperature <- c(rep(seq(800,850,25),6))
+response <- c(570,	1063,	565,
+              565,	1080,	510,
+              583,	1043,	590,
+              528,	988,	526,
+              547,	1026,	538,
+              521,	1004,	532)
+position <- as.fixed(position)
+temperature <- as.random(temperature)
+dat3 <- data.frame(position,temperature,response)
+dat3
+model3 <- aov(response~position+temperature+position*temperature,data=dat3)
+gad(model3)
+```
+
+P value of the interaction is 0.427110 which is larger than $\alpha = 0.05$ level of significance, so we don't reject H0 hence there is no two factors interaction present. Also p value for the position and temperature is 0.05266 and 3.25e-14 respectively.
+
+### Part d
+
+Comments on p values: 
+
+The interaction term is not significant for all the part A, B and C.
+
+When both factors are fixed, position and temperature both are significant at alpha= 0.01 and 0.001 level of significance.
+
+When both factors are random, position and temperature both are significant at alpha= 0.1 and 0.001 level of significance.
+
+When the factors have mixed effect, position and temperature both are significant at alpha= 0.1 and 0.001 level of significance.
+
+But, it is possible to see a difference in the p-values of the main effects:
+
+For fixed models, we are getting different p-values when compared with the random models. However, for mixed models, we are getting smaller p-values for the main effects. 
+
+Temperature p-value is the same for Fixed and Mixed Models, but different in the random
+
+Position p-value is the same for mixed and Random but different for fixed
+ 

@@ -1,0 +1,113 @@
+---
+title: "US Vs Japanese Car MPG"
+author: "Imtiaz, Ariful"
+date: "2022-09-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Answer  to Question no.1 
+
+Reading Table from the URL:
+
+```{r}
+cars <- read.csv("https://raw.githubusercontent.com/tmatis12/datafiles/main/US_Japanese_Cars.csv")
+colnames(cars) <- c("USCars", "JapaneseCars")
+cars
+length(cars$JapaneseCars)
+JP <- cars[c(1:28), 2]
+length(JP)
+```
+
+```{r}
+
+qqnorm(cars$USCars, col = "red", main =  "UScars NPP", ylab = "mpg")
+qqline(cars$USCars)
+qqnorm(JP, col = "blue", main =  "Japanese cars  NPP", ylab = "mpg")
+qqline(JP)
+```
+
+*Comment on US car normal probability plot:* We observe that most of the data points fall in straight line, hence, the MPG of the US cars appear to be normally distributed.
+
+*Comment on the Japanese car normal probability plot:* Like the US cars, the MPG data points of the Japanese cars appear to fall within a line and thus appear to be normally distributed.
+
+## Answer to Question no.2
+
+```{r}
+boxplot(cars$USCars, JP, main = "Variance Equality Check", names = c("UScars", "Japanese Cars"), ylab = "Mpg")
+```
+
+From looking at the box plot we observe that the Interquartile range (IQR) or height of the boxes are not the same. Hence there is a difference in the variance of the two samples. So variance does not appear to be constant. We can also see two outliers in the US car sample.
+
+## Answer to Question no.3
+
+```{r}
+logcars <- log(cars)
+qqnorm(logcars$USCars, col = "red", main = "US Cars NPP after LT", ylab = "Log MPG")
+qqline(logcars$USCars)
+qqnorm(logcars$JapaneseCars, col = "blue", main = "JP Cars NPP after LT", ylab = " Log MPG")
+qqline(logcars$JapaneseCars)
+boxplot(logcars$USCars, logcars$JapaneseCars,  main = "Variance Equality Check", names = c("UScars", "Japanese Cars"), ylab = "Log of Mpg")
+```
+
+After log transformation, we observe that the Interquartile range (IQR) or height of the boxes appear the same. Hence there is visually no difference in the variance of the two samples. So variance appears to be constant.
+
+*Comment on the before/after log-transform box plots:*
+
+From the two different box plots (cars and log of cars), we observe that after log transformation, the variance of the two groups become equal. Furthermore, in the original boxplots show two outliers in the same side of the US cars (upper side). After log transformation, both the outliers are on two different sides of the plots (high and low sides).
+
+Also, the normal probability plots for both the original data and the log transformed data show normaility. For t-test, the normality is a weak assumption. Hence slight deviation from the normality would also give fairly accurate results. But equality of variance is a strong assumption and it is true after the log transformation. Hence, we use Log-Transformed data for our t-test which holds our strong assumption of equal variance.
+
+## Answer to Question no.4
+
+u1 = mean of US cars, u2 = mean of Japanese cars
+
+Null Hypothesis: H0 : u1 = u2
+
+Alternative Hypothesis: Ha: u1 \< u2
+
+```{r}
+t.test(logcars$USCars, logcars$JapaneseCars, alternative = "less",  var.equal = TRUE)
+summary(logcars)
+```
+
+*Answer 4a*
+
+The sample average of the Japanese and US car MPG are 3.271 and 2.741 respectively.
+
+*Answer 4b*
+Since P-value \< 0.05, so we reject the Null hypothesis (Ho). Hence the conclusion is mean number of the log of the MPG f the US car is significantly different (***less than***) the Japanese cars at a 0.05 level of significance. So the hypothesis formulated by the environmental group is true (Us car mpg \< Japanese car mpg.
+
+## Complete Code
+
+```{r eval = FALSE}
+cars <- read.csv("https://raw.githubusercontent.com/tmatis12/datafiles/main/US_Japanese_Cars.csv")
+colnames(cars) <- c("USCars", "JapaneseCars")
+cars
+length(cars$JapaneseCars)
+JP <- cars[c(1:28), 2]
+length(JP)
+#answer to qurstion no.1
+qqnorm(cars$USCars, col = "red", main =  "UScars NPP", ylab = "mpg")
+qqline(cars$USCars)
+qqnorm(JP, col = "blue", main =  "Japanese cars  NPP", ylab = "mpg")
+qqline(JP)
+
+#answer to qurstion no.2
+boxplot(cars$USCars, JP, main = "Variance Equality Check", names = c("UScars", "Japanese Cars"), ylab = "Mpg")
+
+#answer to question no.3
+logcars <- log(cars)
+qqnorm(logcars$USCars, col = "red", main = "US Cars NPP after LT", ylab = "Log MPG")
+qqline(logcars$USCars)
+qqnorm(logcars$JapaneseCars, col = "blue", main = "JP Cars NPP after LT", ylab = "Log MPG")
+qqline(logcars$JapaneseCars)
+boxplot(logcars$USCars, logcars$JapaneseCars)
+
+#Answer to question no.4
+?t.test
+t.test(logcars$USCars, logcars$JapaneseCars, alternative = "less",  var.equal = TRUE)
+```

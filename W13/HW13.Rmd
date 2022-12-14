@@ -1,0 +1,330 @@
+---
+title: "HW13"
+author: "Ayodeji, Md Ariful Haque"
+date: '2022-11-25'
+output: html_document
+---
+
+## Question 8.2
+
+We are experimenting on $2^{4-1}$ where k=4 and p=1
+
+I=ABCD and I=-ABCD
+
+```{r,warning=FALSE,message=FALSE}
+library(FrF2)
+res3<-FrF2(nfactors=4,resolution=4,randomize=FALSE)
+res3
+```
+
+```{r}
+response<- c(7.037,16.867,13.876,17.273,11.846,4.368,9.36,15.653)
+response1 <-  add.response(res3,response)
+aliasprint(response1)
+```
+
+We can conclude that since the two factor interaction is aliased with each other, they are in the $4^{th}$ resolution.
+
+Running the summary of our design we have
+
+```{r}
+summary(response1)
+```
+
+```{r}
+DanielPlot(response1)
+MEPlot(response1,show.alias=TRUE)
+```
+
+We can see from the Daniel plot that none of the factors are significant.
+
+Because of this we can say that none of the factors affect the Crack length.
+
+## Question 8.24
+
+We are experimenting on $2^{5-1}$ where k=5 and p=1
+
+I=ABCDE and I=-ABCDE
+
+```{r}
+res1<- FrF2(nfactors = 5, resolution = 5 ,randomize = FALSE)
+aliasprint(res1)
+```
+
+The summary of our design is
+
+```{r}
+summary(res1)
+```
+
+Confounding the AB factor combination with blocks
+
+```{r}
+AB<- c("+","-","-","+","+","-","-","+","+","-","-","+","+","-","-","+")
+block<- c(1,2,2,1,1,2,2,1,1,2,2,1,1,2,2,1)
+dat<- data.frame(res1,AB,block)
+dat
+```
+
+We can see that the AB and CDE factor interactions are confounded with blocks
+
+Also, we see that No Two factor interaction is confounded in block 1 and block 2
+
+Overall we noticed that,
+
+Main effects confounded in block 1- E, C,D
+
+Main effects confounded in block 2- A,B
+
+## Question 8.25
+
+We are experimenting on $2^{7-2}$ where k=7 and p=2
+
+I=ABCDEF and I=-ABCDEF ;
+
+I=ABDEG and I=-ABDEG
+
+With a generalized interaction of I=CEFG, I=-CEFG
+
+```{r}
+design1<- FrF2(nruns = 32,nfactors=7,blocks = 4,randomize=TRUE)
+design1
+```
+
+```{r}
+summary(design1)
+
+
+```
+
+We observe that only ACE, BFG, and ABCEFG are confounded with blocks
+
+## Question 8.28
+
+```{r}
+Lamtemp <- c(rep(c("-1","1"),8)) 
+Lamtime <- c(rep(c("-1","-1","1","1"),4))
+LamPres<- c(rep(c("-1","-1","-1","-1","1","1","1","1"),2))
+Firtemp <- c(rep(c("-1","-1","-1","-1","-1","-1","-1","-1","1","1","1","1","1","1","1","1"),1))
+Fircytime <- c(rep(c("-1","1","1","-1","1","-1","-1","1"),2))
+Firdewpoint <- c(rep(c("-1","1","-1","1","1","-1","1","-1"),2))
+response<- c(0.0167,0.0062,0.0041,0.0073,0.0047,0.0219,0.0121,0.0255,0.0032,0.0078,0.0043,0.0186,0.011,0.0065,0.0155,0.0093,0.0128,0.0066,0.0043,0.0081,0.0047,0.0258,0.009,0.025,0.0023,0.0158,0.0027,0.0137,0.0086,0.0109,0.0158,0.0124,0.0149,0.0044,0.0042,0.0039,0.004,0.0147,0.0092,0.0226,0.0077,0.006,0.0028,0.0158,0.0101,0.0126,0.0145,0.011,0.0185,0.002,0.005,0.003,0.0089,0.0296,0.0086,0.0169,0.0069,0.0045,0.0028,0.0159,0.0158,0.0071,0.0145,0.0133)
+total<- c(629,192,176,223,223,920,389,900,201,341,126,640,455,371,603,460)
+mean<- c(157.25,48,44,55.75,55.75,230,97.25,225,50.25,85.25,31.5,160,113.75,92.75,150.75,115)
+std <- c(24.418,20.976,4.083,25.025,22.41,63.639,16.029,39.42,26.725,50.341,7.681,20.083,31.12,29.51,6.75,17.45
+)
+dat<-cbind(Lamtemp,Lamtime,LamPres,Firtemp,Fircytime,Firdewpoint,response,total,mean,std)
+dat <-as.data.frame(dat)
+dat
+```
+
+Question a.
+
+The above design uses a $2^{6-2}$ with Resolution IIII and with 16 runs.
+
+## b.)
+
+the following which are alias relationship are displayed below
+
+```{r}
+res4<- FrF2(nfactors = 6,resolution = 4 , randomize = TRUE)
+aliasprint(res4)
+```
+
+Using table 8.14 from the Montgomery textbook,
+
+The design generators is
+
+E=(+-ABC) and F=(+-BCD) that is I=ABCE , I=BCDF
+
+The generalized interaction is I=ADEF
+
+### C.
+
+```{r}
+Lamtemp <- c(rep(c(-1,1),8)) 
+Lamtime <- c(rep(c(-1,-1,1,1),4))
+LamPres <- c(rep(c(-1,-1,-1,-1,1,1,1,1),2))
+Firtemp <- c(rep(c(-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1,1),1))
+Fircytime <- c(rep(c(-1,1,1,-1,1,-1,-1,1),2))
+Firdewpoint <- c(rep(c(-1,1,-1,1,1,-1,1,-1),2))
+response<- c(0.0167,0.0062,0.0041,0.0073,0.0047,0.0219,0.0121,0.0255,0.0032,0.0078,0.0043,0.0186,0.011,0.0065,0.0155,0.0093,0.0128,0.0066,0.0043,0.0081,0.0047,0.0258,0.009,0.025,0.0023,0.0158,0.0027,0.0137,0.0086,0.0109,0.0158,0.0124,0.0149,0.0044,0.0042,0.0039,0.004,0.0147,0.0092,0.0226,0.0077,0.006,0.0028,0.0158,0.0101,0.0126,0.0145,0.011,0.0185,0.002,0.005,0.003,0.0089,0.0296,0.0086,0.0169,0.0069,0.0045,0.0028,0.0159,0.0158,0.0071,0.0145,0.0133)
+total<-c(629,192,176,223,223,920,389,900,201,341,126,640,455,371,603,460)
+mean<- c(157.25,48,44,55.75,55.75,230,97.25,225,50.25,85.25,31.5,160,113.75,92.75,150.75,115)
+std <- c(24.418,20.976,4.083,25.025,22.41,63.639,16.029,39.42,26.725,50.341,7.681,20.083,31.12,29.51,6.75,17.45
+)
+dat <- cbind(Lamtemp,Lamtime,LamPres,Firtemp,Fircytime,Firdewpoint,response,total,mean,std)
+dat <- as.data.frame(dat)
+dat
+```
+
+```{r,message=TRUE,warning=FALSE}
+library(GAD)
+dat$Lamtemp <- as.fixed(dat$Lamtemp)
+dat$Lamtime <- as.fixed(dat$Lamtime)
+dat$LamPres <- as.fixed(dat$LamPres)
+dat$Firtemp <- as.fixed(dat$Firtemp)
+dat$Firdewpoint <- as.fixed(dat$Firdewpoint)
+dat$Fircytime <- as.fixed(dat$Fircytime)
+
+model<- aov(response~Lamtemp*Lamtime*LamPres*Firtemp*Fircytime*Firdewpoint,data = dat)
+summary(model)
+
+```
+
+The variables that would affect average camber is A,C,E,F also some interaction effects that can be seen above.
+
+## D.
+
+```{r}
+camber<-  c(24.418,20.976,4.083,25.025,22.41,63.639,16.029,39.42,26.725,50.341,7.681,20.083,31.12,29.51,6.75,17.45)
+var<-c(camber^2)
+A<- c(rep(c("-1","1"),8)) 
+B<- c(rep(c("-1","-1","1","1"),4))
+C<- c(rep(c("-1","-1","-1","-1","1","1","1","1"),2))
+D<- c(rep(c("-1","-1","-1","-1","-1","-1","-1","-1","1","1","1","1","1","1","1","1"),1))
+E<- c(rep(c("-1","1","1","-1","1","-1","-1","1"),2))
+F<- c(rep(c("-1","1","-1","1","1","-1","1","-1"),2))
+dat2<- data.frame(A,B,C,D,E,F,var)
+model2<-lm(camber~A*B*C*D*E*F,data=dat2)
+DanielPlot(model2)
+```
+
+We conclude that based on the Daniel's plot that
+
+Laminating temperature and Laminating time are factors that are significantly affecting the standard deviation.
+
+Running the model of the significant factors above we have
+
+```{r}
+model5<-aov(camber~A+B,data = dat2)
+summary(model5)
+```
+
+From the ANOVA analysis, we can see that since the pvalue of Laminating temperature(0.01202) and Laminating time(0.00948) are less than the reference level of significance(0.05).
+
+We ultimately conclude that Laminating temperature and Laminating time are affecting standard deviation of camber.
+
+## E.
+
+```{r}
+Lamtemp <- c(rep(c("-1","1"),8)) 
+Lamtime <- c(rep(c("-1","-1","1","1"),4))
+LamPres <- c(rep(c("-1","-1","-1","-1","1","1","1","1"),2))
+Firtemp <- c(rep(c("-1","-1","-1","-1","-1","-1","-1","-1","1","1","1","1","1","1","1","1"),1))
+Fircytime <- c(rep(c("-1","1","1","-1","1","-1","-1","1"),2))
+Firdewpoint <- c(rep(c("-1","1","-1","1","1","-1","1","-1"),2))
+response<- c(0.0167,0.0062,0.0041,0.0073,0.0047,0.0219,0.0121,0.0255,0.0032,0.0078,0.0043,0.0186,0.011,0.0065,0.0155,0.0093,0.0128,0.0066,0.0043,0.0081,0.0047,0.0258,0.009,0.025,0.0023,0.0158,0.0027,0.0137,0.0086,0.0109,0.0158,0.0124,0.0149,0.0044,0.0042,0.0039,0.004,0.0147,0.0092,0.0226,0.0077,0.006,0.0028,0.0158,0.0101,0.0126,0.0145,0.011,0.0185,0.002,0.005,0.003,0.0089,0.0296,0.0086,0.0169,0.0069,0.0045,0.0028,0.0159,0.0158,0.0071,0.0145,0.0133)
+total <- c(629,192,176,223,223,920,389,900,201,341,126,640,455,371,603,460)
+mean <- c(157.25,48,44,55.75,55.75,230,97.25,225,50.25,85.25,31.5,160,113.75,92.75,150.75,115)
+std <- c(24.418,20.976,4.083,25.025,22.41,63.639,16.029,39.42,26.725,50.341,7.681,20.083,31.12,29.51,6.75,17.45
+)
+dat3<- cbind(Lamtemp,Lamtime,LamPres,Firtemp,Fircytime,Firdewpoint,response,total,mean,std)
+dat3<- as.data.frame(dat3)
+model5<-lm(dat$response~dat$Lamtemp*dat$Lamtime*dat$LamPres*dat$Firtemp*dat$Fircytime*dat$Firdewpoint)
+coef(model5)
+```
+
+```{r}
+summary(model5)
+```
+
+The expression for reducing camber(y) is
+
+y= 0.015735 + 0.0010094A +0.0017844C -0.0041875E - 0.0077469F
+
+In conclusion we have to let A, C be at low levels [-1,-1] and E,F high [+1,+1].
+
+## Question 8.40
+
+Part A,
+
+the experiment investigated A,B,C,D which are four factors.
+
+Part B,
+
+the resolution of the design used is **FOUR**
+
+Part C,
+
+```{r}
+O = 8
+AD =10
+BD =12
+AB =7
+CD =13
+AC = 6
+BC =5
+ABCD =11
+EffectofA<-(2*(AD+AB+AC+ABCD-O-BD-CD-BC))/(8)
+EffectofA
+```
+
+```{r}
+EffectofB<-(2*(BD+AB+BC+ABCD-O-AD-CD-AC))/(8)
+EffectofB
+```
+
+```{r}
+EffectofC <- (2*(CD+AC+BC+ABCD-O-AD-BD-AB))/(8)
+EffectofC
+```
+
+```{r}
+EffectofD <- (2*(AD+BD+CD+ABCD-O-AB-AC-BC))/(8)
+EffectofD
+```
+
+We can see that
+
+Effect of A is -1
+
+Effect of B is -0.5
+
+Effect of C is -0.5
+
+Effect of D is 5
+
+## QUESTION 8.48.
+
+```{r}
+design4<- FrF2(nfactors = 5,nruns = 8,generators = c("-ABC","BC"), randomize = FALSE)
+design4
+```
+
+```{r}
+summary(design4)
+```
+
+```{r}
+design5<-fold.design(design4)
+aliasprint(design5)
+```
+
+a\. the design generator for column D is -ABC
+
+b\. the design generator for column E is BC
+
+c\. From the Montgometry textbook the resolution of the design is **FOUR.**
+
+## Question 8.60
+
+```{r,message=FALSE,warning=FALSE}
+library(FrF2)
+design<- FrF2(nfactors=7,resolution=3,randomize=FALSE)
+design
+```
+
+```{r}
+design2<-fold.design(design,column=1)
+design2
+```
+
+```{r}
+design.info(design2)$aliased$main
+
+```
+
+```{r}
+aliasprint(design2)
+```

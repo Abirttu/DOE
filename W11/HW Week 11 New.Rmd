@@ -1,0 +1,470 @@
+---
+title: "HW Week 11"
+author: "Md Ariful Haque Miah, Ayodegi"
+date: "11/13/2022"
+output:
+  html_document:
+    df_print: paged
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+Problem 6.8
+
+```{r}
+library(DoE.base)
+time<-c(rep(-1, 12),rep(1, 12) )
+cul_med<-c(rep(-1, 2), rep(1, 2))
+obs <- c(21,22,25,26,23,28,24,25,20,26,29,27,37,39,31,34,38,38,29,33,35,36,30,35)
+time <- as.factor(time)
+cul_med <- as.factor(cul_med)
+dat <- data.frame(time,cul_med,obs)
+dat
+model <- aov(obs~time*cul_med,data=dat)
+summary(model) 
+plot(model)
+```
+
+Hypothesis Test:
+
+$H_0: \alpha_i = 0$
+
+$H_a: \alpha_i \neq 0$
+
+$H_0: \beta_j\ = 0$
+
+$H_a: \beta_j \neq 0$
+
+$H_0: \alpha\beta_{ij}=0$
+
+$H_a: \alpha\beta_{ij}\neq0$
+
+Only the factors Time and the interaction effects (Time:Culture Medium)
+are significant as the p value is less than $\alpha=0.001$ level of
+significance so for these factors we reject $H_0$ and the factor Culture
+medium is not significant as the p value is larger than $\alpha=0.05$
+level of significance so for this factors we fail to reject $H_0$. Also
+Residual vs Fitted plot shows that the variance is constant and the
+errors are normally distributed and thus the model is adequate.
+
+Problem 6.12 (a) Estimate the factor effects
+
+```{r}
+A <- c(rep(-1,4),rep(1,4))
+B <- c(rep(-1,8),rep(1,8))
+obs <- c(14.037,16.165,13.972,13.907,13.880,13.860,14.032,13.914,14.821,14.757,14.843,14.878,14.888,14.921,14.415,14.932)
+dat <- data.frame(A,B,obs)
+dat
+mod <- lm(obs~A*B,data=dat)
+coef(mod)
+
+
+
+
+A <- as.factor(A)
+B <- as.factor(B)
+dat <- data.frame(A,B,obs)
+dat
+```
+**Multiply the value of each factor's coefficients by 2, we will get the corresponding factor effects.**
+
+Finding Corner Points:
+
+```{r}
+one <- sum(dat$obs[1:4])
+one
+a <- sum(dat$obs[5:8])
+a
+b <- sum(dat$obs[9:12])
+b
+ab <- sum(dat$obs[13:16])
+ab
+n <- c(4)
+fact_A <- 2*(a+ab-b-one)/(4*n)
+fact_A
+fact_B <- 2*(b+ab-a-one)/(4*n)
+fact_B
+fact_AB <- 2*(ab+one-a-b)/(4*n)
+fact_AB
+```
+
+Therefore, The factor Effect A = -0.31725, B = 0.586, Interaction effect
+AB = 0.2815
+
+(b) Analysis of variance
+
+```{r}
+A <- c(rep(-1,4),rep(1,4))
+B <- c(rep(-1,8),rep(1,8))
+obs <- c(14.037,16.165,13.972,13.907,13.880,13.860,14.032,13.914,14.821,14.757,14.843,14.878,14.888,14.921,14.415,14.932)
+A <- as.factor(A)
+B <- as.factor(B)
+dat <- data.frame(A,B,obs)
+dat
+model <- aov(obs~A*B,data=dat)
+summary(model)
+```
+
+Hypothesis Test: $H_0: \alpha_i = 0$
+
+$H_a: \alpha_i \neq 0$
+
+$H_0: \beta_j\ = 0$
+
+$H_a: \beta_j \neq 0$
+
+$H_0: \alpha\beta_{ij}=0$
+
+$H_a: \alpha\beta_{ij}\neq0$
+
+p values of the main effect A and the interaction effect (A:B) is
+greater than $\alpha = 0.05$ level of significance. Hence the main
+effect A and the interaction effect (A:B) are not significant as we fail
+to reject $H_0$. On the other hand p value of the main effect B is less
+than $\alpha = 0.1$ level of significance. Hence the main effect B is
+significant as we reject $H_0$.
+
+(c) Regression Equation:
+
+```{r}
+A <- c(rep(-1,4),rep(1,4))
+B <- c(rep(-1,8),rep(1,8))
+obs <- c(14.037,16.165,13.972,13.907,13.880,13.860,14.032,13.914,14.821,14.757,14.843,14.878,14.888,14.921,14.415,14.932)
+A <- as.factor(A)
+B <- as.factor(B)
+dat <- data.frame(A,B,obs)
+dat
+model <- lm(obs~A+B+A*B,data=dat)
+summary(model)
+```
+
+y = $\beta_0 + \beta_2 *x_2 + \epsilon$
+
+Hence, y = $14.5203 + 0.3045 * x_2 + \epsilon$
+
+where $\beta_0$ = the intercept = the grand mean of all 16 observations
+and the regression coefficient $\beta_2$ is one-half the corresponding
+factor effect B estimate.
+
+(d) The Residuals Analysis
+
+```{r}
+A <- c(rep(-1,4),rep(1,4))
+B <- c(rep(-1,8),rep(1,8))
+obs <- c(14.037,16.165,13.972,13.907,13.880,13.860,14.032,13.914,14.821,14.757,14.843,14.878,14.888,14.921,14.415,14.932)
+A <- as.factor(A)
+B <- as.factor(B)
+dat <- data.frame(A,B,obs)
+dat
+model <- aov(obs~A*B,data=dat)
+summary(model)
+plot(model)
+```
+
+There is a significant concern in the Residuals vs Fitted Plot, which
+shows that the variance is not constant. Hence the model is not
+adequate. Though the normality assumptions are fairly satisfied in the
+Normal Q-Q plot.
+
+(e) The potential Outlier: Only the observation no. 2 might be the
+    potential outlier according to the $\sqrt$(standardized residual)
+    plot in part (d). Since There is 15 more observations left so only
+    one outlier won't cause any effect to grow an epitaxial layer on
+    polished silicon wafers. Also,the interaction effects are not significant, we can choose any main effect  to maximize the yield of the response vairable (epitaxal layer thickness).
+
+Problem 6.21 (a)
+
+```{r}
+A <- c(rep(-1,7),rep(1,7))
+B <- c(rep(-1,14),rep(1,14))
+C <- c(rep(-1,28),rep(1,28))
+D <- c(rep(-1,56),rep(1,56))
+obs <- c(10,18,14,12.5,19,16,18.5,0,16.5,4.5,17.5,20.5,17.5,33,4,6,1,14.5,12,14,5,0,10,34,11,25.5,21.5,0,0,0,18.5,19.5,16,15,11,5,20.5,18,20,29.5,19,10,6.5,18.5,7.5,6,0,10,0,16.5,4.5,0,23.5,8,8,8,4.5,18,14.5,10,0,17.5,6,19.5,18,16,5.5,10,7,36,15,16,8.5,0,0.5,9,3,41.5,39,6.5,3.5,7,8.5,36,8,4.5,6.5,10,13,41,14,21.5,10.5,6.5,0,15.5,24,16,0,0,0,4.5,1,4,6.5,18,5,7,10,32.5,18.5,8)
+A <- as.factor(A)
+B <- as.factor(B)
+C <- as.factor(C)
+D <- as.factor(D)
+dat <- data.frame(A,B,C,D,obs)
+dat
+model <- aov(obs~A*B*C*D,data=dat)
+summary(model)
+```
+
+Hypothesis Test:
+
+$H_0: \alpha_i = 0$
+
+$H_a: \alpha_i \neq 0$
+
+$H_0: \beta_j\ = 0$
+
+$H_a: \beta_j \neq 0$
+
+$H_0: \gamma_k\ = 0$
+
+$H_a: \gamma_k \neq 0$
+
+$H_0: \delta_l\ = 0$
+
+$H_a: \delta_l \neq 0$
+
+$H_0: \alpha\beta_{ij}=0$
+
+$H_a: \alpha\beta_{ij}\neq0$
+
+$H_0: \alpha\gamma_{ik}=0$
+
+$H_a: \alpha\gamma_{ik}\neq0$
+
+$H_0: \alpha\delta_{il}=0$
+
+$H_a: \alpha\delta_{il}\neq0$
+
+.....
+
+.....
+
+.....
+
+$H_0: \alpha\beta\gamma\delta_{ijkl}=0$
+
+$H_a: \alpha\beta\gamma\delta_{ijkl}\neq0$
+
+From the anova model summary and analyzing the p value we see that None
+of the interaction terms are significant but the main effect factors
+"length of putt" and "the type of putter" are significant and these
+factors significantly affect putting performance.
+
+Problem 6.21 (b)
+
+```{r}
+plot(model)
+```
+
+Residual vs fitted plot shows that the variance is not constant and
+hence the model is not adequate though the errors are assumed to be
+normally distributed from the normal Q-Q plot.
+Check boxcox
+
+```{r}
+library(MASS)
+A <- c(rep(10,7),rep(30,7),rep(10,7),rep(30,7),rep(10,7),rep(30,7),rep(10,7),rep(30,7),rep(10,7),rep(30,7),rep(10,7),rep(30,7),rep(10,7),rep(30,7),rep(10,7),rep(30,7))
+B <- c(rep(1,14),rep(2,14),rep(1,14),rep(2,14),rep(1,14),rep(2,14),rep(1,14),rep(2,14))
+C <- c(rep(1,28),rep(2,28),rep(1,28),rep(2,28))
+D <- c(rep(1,56),rep(2,56))
+obs <- c(10,18,14,12.5,19,16,18.5,0,16.5,4.5,17.5,20.5,17.5,33,4,6,1,14.5,12,14,5,0,10,34,11,25.5,21.5,0,0,0,18.5,19.5,16,15,11,5,20.5,18,20,29.5,19,10,6.5,18.5,7.5,6,0,10,0,16.5,4.5,0,23.5,8,8,8,4.5,18,14.5,10,0,17.5,6,19.5,18,16,5.5,10,7,36,15,16,8.5,0,0.5,9,3,41.5,39,6.5,3.5,7,8.5,36,8,4.5,6.5,10,13,41,14,21.5,10.5,6.5,0,15.5,24,16,0,0,0,4.5,1,4,6.5,18,5,7,10,32.5,18.5,8)
+model <- aov(obs~A*B*C*D)
+summary(model)
+plot(model)
+boxcox(model)
+```
+
+
+
+## QUESTION 6.36
+
+Getting in data
+
+```{r,warning=FALSE,message=FALSE}
+library(DoE.base)
+A<- c(-1,1)
+B<- c(rep(-1,2),rep(1,2))
+C<- c(rep(-1,4),rep(1,4))
+D<- c(rep(-1,8),rep(1,8))
+obs<- c(1.92,11.28,1.09,5.75,2.13,9.53,1.03,5.35,1.6,11.73,1.16,4.68,2.16,9.11,1.07,5.3)
+dat<- data.frame(A,B,C,D,obs)
+dat
+```
+
+## 6.36) A
+
+```{r}
+model<-lm(obs~A*B*C*D,data=dat)
+coef(model)
+```
+
+```{r}
+halfnormal(model)
+```
+
+From the Half-normal plot,we can see that Factors A,B, A:B , and A:B:C are significant at alpha=0.5
+
+```{r}
+model2<-lm(obs~A+B+C+A*B+A*B*C,data=dat)
+summary(model2)
+```
+
+To select our tentative model, we would consider the significant factors from our half-normal plots,which are factors A,B,A:B,A:B:C.
+
+So therefore our tentative model can be written as
+
+$Y_{i,j,k,l}=4.68062+3.16062\alpha _{i}-1.50187\beta_{j}-1.06938\alpha\beta_{ij}+0.34437\alpha\beta\gamma+\epsilon_{ijkl}$
+
+## 6.36) B
+
+```{r}
+model2<- aov(obs~A+B+C+A*B+A*B*C,data =dat)
+summary(model2)
+```
+
+```{r}
+plot(model2)
+```
+
+From the Normal Q-Q plot, we can't assume Normality in the data since the data points in the plot doesn't appears to fall on a straight line
+
+Also, from the Residuals vs fitted plot, we can't assume constant variance since all the residuals have varying spread, depleting that the variances are not equal.
+
+## 6.36) C
+
+Using a Log transformation on our data below
+
+```{r}
+logobs <- log(obs)
+dat2 <- data.frame(A,B,C,D,logobs)
+model3<- lm(logobs~A*B*C*D,data = dat2)
+coef(model3)
+```
+
+```{r}
+halfnormal(model3)
+```
+
+```{r}
+model3<-lm(logobs~A+B+C+A:B:C,data=dat2)
+summary(model3)
+```
+
+```{r}
+model4<-aov(logobs~A+B+C+A:B:C,data=dat2)
+summary(model4)
+
+```
+
+```{r,warning=FALSE,message=FALSE}
+plot(model4)
+```
+
+After the Log transformation, we can observe that from the half-normal plots that only factors A, B, and A:B:C are significant and interactions of A:B seems insignificant as compared to pre-log transformation.
+
+The confirmation of the half normal plot was double checked using ANOVA analysis that showed factors A,B, and A:B:C to be significant as shown above.
+
+Based on the residuals plots, after the log transformation was performed we observed that
+
+From the Normal Q-Q plot, we can not assume Normality in the data since the data points in the plot does-not appear to fall on a straight line
+
+Also, from the Residuals vs fitted plot, we cannot assume constant variance since all the residuals have varying spread, depleting that the variances are not equal.
+
+## 6.36) D
+
+Fitting a model of the coded variables we have
+
+$Y_{ijkl}=1.185417+0.812870\alpha _{i}-0.314278\beta_{j}+0.063434\alpha\beta\gamma+\epsilon_{{ijkl}}$
+
+
+
+## QUESTION 6.39
+
+Getting in the data we have
+
+```{r}
+library(DoE.base)
+A<-c(-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1)
+B<-c(-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1)
+C<-c(-1,-1,-1,-1,1,1,1,1,-1,-1,-1,-1,1,1,1,1,-1,-1,-1,-1,1,1,1,1,-1,-1,-1,-1,1,1,1,1)
+D<-c(-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1,1)
+E<- c(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+obs<- c(8.11,5.56,5.77,5.82,9.17,7.8,3.23,5.69,8.82,14.23,9.2,8.94,8.68,11.49,6.25,9.12,7.93,5,7.47,12,9.86,3.65,6.4,11.61,12.43,17.55,8.87,25.38,13.06,18.85,11.78,26.05)
+dat<- data.frame(A,B,C,D,E,obs)
+```
+
+## 6.39) A
+
+```{r}
+model<-lm(obs~A*B*C*D*E,data=dat)
+coef(model)
+```
+
+```{r}
+halfnormal(model)
+```
+
+```{r}
+summary(lm(obs~B+D+ E+ A:D+ A+ D:E+ B:E+ A:B+ A:B:E+ A:E+ A:D:E,data=dat))
+```
+
+```{r}
+summary(model)
+```
+
+```{r}
+model2<- aov(obs~A+B+D+E+A*B+A*D+A*E+B*E+D*E+A*B*E+A*D*E,data=dat)
+summary(model2)
+```
+
+We can observe that from the half-normal plots that A,D,E,A:D,D:E,B:E,A:B,A:E,A:B:E,A:D:E are significant
+
+The confirmation of the half normal plot was double checked using ANOVA analysis that showed that the above factors mentioned were significant
+
+## 6.39) B
+
+```{r}
+plot(model2)
+```
+
+From the Normal Q-Q plot, we can't assume Normality in the data since the data points in the plot doesn't appears to fall on a straight line
+
+Also, from the Residuals vs fitted plot, we can't assume constant variance since all the residuals have varying spread, depleting that the variances are not equal.
+
+## 6.39) C
+
+```{r}
+A<- c(-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1)
+B<- c(-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1)
+D<- c(-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1,1)
+E<- c(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+obs<- c(8.11,5.56,5.77,5.82,9.17,7.8,3.23,5.69,8.82,14.23,9.2,8.94,8.68,11.49,6.25,9.12,7.93,5,7.47,12,9.86,3.65,6.4,11.61,12.43,17.55,8.87,25.38,13.06,18.85,11.78,26.05)
+dat<- data.frame(A,B,D,E,obs)
+```
+
+```{r}
+model4<- lm(obs~A*B*D*E,data =dat)
+coef(model4)
+```
+
+```{r}
+halfnormal(model4)
+```
+
+```{r}
+summary(model4)
+```
+
+```{r}
+model5<- aov(obs~A+B+D+E+A*B+A*D+A*E+B*E+D*E+A*B*E+A*D*E,data=dat)
+summary(model5)
+```
+
+```{r}
+plot(model5)
+```
+
+Factor C was dropped totally from our model initially because it seemed insignificant. After dropping factor C we realized that from the half-normal plots that A,D,E,A:D,D:E,B:E,A:B,A:E,A:B:E,A:D:E are significant
+
+The confirmation of the half normal plot was double checked using ANOVA analysis that showed that the above factors mentioned were significant
+
+Which was similar to the results gotten when factor C was included.
+
+## 6.39) D
+
+Fitting our model in a linear equation we can see that
+
+$Y_{ijkl}=10.18031+1.61594\alpha _{i}+0.04344\beta_{j}+2.98844\gamma_{k}+1.66656\alpha\gamma+1.38969\gamma\delta+1.28344\beta\delta+1.23656\alpha\beta+1.02719\alpha\delta+1.18531\alpha\beta\delta+0.90156\alpha\gamma\delta$
+
+To maximize the predicted response, the above linear model should be follows
+
+Note
+
+Because all the factors are of positive coefficient, therefore they should be at a +1 level to produce maximum response.
+

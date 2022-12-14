@@ -1,0 +1,53 @@
+---
+title: "HW-Week 9"
+author: "Md Ariful Haque Miah, Ayodeji Ayoola"
+date: "10/30/2022"
+output:
+  html_document:
+    df_print: paged
+---
+Problem 5.9
+```{r,error=FALSE,warning=FALSE,message=FALSE}
+library(GAD)
+drill_speed <- c(rep(125,8),rep(200,8))
+feed_rate <- c(rep(seq(0.015,0.060,0.015),4))
+response <- c(2.70,2.45,2.60,2.75,2.78,2.49,2.72,2.86,2.83,2.85,2.86,2.94,2.86,
+              2.80,2.87,2.88)
+drill_speed <- as.fixed(drill_speed)
+feed_rate <- as.fixed(feed_rate)
+dat <- data.frame(drill_speed,feed_rate,response)
+dat
+model <- aov(response~drill_speed+feed_rate+drill_speed*feed_rate,data=dat)
+summary(model)
+interaction.plot(drill_speed,feed_rate,response)
+```
+
+Model Equation:
+$Y_{ijk} =\mu+\alpha_i+\beta_j+\alpha\beta_{ij}+\epsilon_{ijk}$
+where, $\epsilon_{ijk} ~ N(0,\sigma^2)$
+
+Hypothesis Test:
+
+$H_0: \alpha_i=0 \forall$ i
+
+$H_a: \alpha_i \not=0$ for some i
+
+$H_0: \beta_j=0 \forall$ j
+
+$H_a: \beta_j \not=0$ for some j
+
+$H_0: \alpha\beta_{ij}= 0  \forall$ ij
+
+
+$H_a: \alpha\beta_{ij} \not = 0$  for some ij
+
+Conclusions: 
+From the summary of the model, we see that the p value (0.025567)
+of the interaction term is less than $\alpha=0.05$ level so we 
+reject the Null hypothesis $H_0$ which indicates that the 
+interaction term is significant.Also, the interaction plot shows that there is an
+interaction between these two factors.Because of this we would stop our testing and do not continue to test the hypothesis of the main effects.
+
+
+
+

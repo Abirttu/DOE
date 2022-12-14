@@ -1,0 +1,353 @@
+---
+title: "Homework10"
+author: "Ayodeji, Md Ariful Haque"
+date: '2022-11-05'
+output: html_document
+---
+
+## Question 5.4
+
+```{r,message=FALSE,warning=FALSE,error=FALSE}
+Feedrate<- c(rep(1,12), rep(2,12), rep(3,12))
+cut<- rep(seq(1,4),9)
+obs <- c(74, 79, 82, 99, 64, 68, 88, 104, 60, 73, 92, 96, 92, 98, 99, 
+              104, 86, 104, 108, 110, 88, 88, 95, 99, 99, 104, 108, 114, 
+              98, 99, 110, 111, 102, 95, 99, 107)
+dat<- data.frame(Feedrate,cut,obs)
+```
+
+Question 5.4 a
+
+Testing at level of significance=0.05
+
+Using the model equation of
+
+$Yijk$=$\mu$+$\alpha i$+$\beta j$+$\alpha\beta ij$+$\varepsilon ijk$
+
+where $\varepsilon ijk$ $\sim \left( 0,\sigma^{2} \right)$
+
+Stating our null and alternative hypothesis we have
+
+Null hypothesis for interaction effects are
+
+$\alpha\beta ij=0$ for all ij
+
+Alternative hypothesis for interaction effects are
+
+$\alpha\beta ij\neq 0$ for some ij
+
+Main effect hypothesis
+
+For Null hypothesis
+
+$\alpha i=0$ for all i
+
+for alternative hypothesis
+
+$\alpha i\neq 0$ for some i
+
+Null hypothesis
+
+$\beta j=0$ for all j
+
+$\beta j\neq 0$ for some j
+
+```{r,message=FALSE,error=FALSE,warning=FALSE}
+library(GAD)
+Feedrate<- as.fixed(Feedrate)
+cut <- as.fixed(cut)
+Model <- aov(obs~cut+Feedrate+cut*Feedrate)
+GAD::gad(Model)
+```
+
+From the values obtained from our model we can see that
+
+the p-value for the interaction model (**0.01797**) is less than our reference significant level of alpha(**0.05**) , hence we are stating that we are rejecting the null hypothesis and saying that there is interaction between the feedrate and depth of cut in our analysis
+
+The p-value for our feed-rate was highly significant with p=1.086e-09, which was less than 0.05
+
+The p-value for our depth of cut was also highly significant with p=1.652e-07, which was less than 0.05
+
+## 
+
+```{r}
+interaction.plot(cut,Feedrate,obs)
+```
+
+The above interaction plot concludes that we have an interaction effects between the two factors considered (depth of cut and feed-rate)
+
+## 
+
+## Question 5.4 b
+
+```{r}
+plot(Model)
+```
+
+From the residual plot, we can see that the Normal probability plot of the residuals falls fairly on a straight line and hence we can validate normality
+
+Since the residual vs fitted plot falls fairly on a straight line ,we can roughly assume constant variance in our model
+
+## Question 5.4 c
+
+```{r}
+mean(obs[1:12])
+mean(dat$obs[1:12])
+```
+
+```{r}
+var(obs[1:12])
+var(dat$obs[1:12])
+```
+
+```{r}
+mean(dat$obs[13:24])
+```
+
+```{r}
+var(dat$obs[13:24])
+```
+
+```{r}
+mean(dat$obs[25:36])
+```
+
+```{r}
+var(dat$obs[25:36])
+```
+
+point estimate for feed-rate 0.2
+
+mean= 81.58 and variance=205.53
+
+point estimate for feed-rate 0.25
+
+mean= 97.58 and variance=64.08
+
+point estimate for feed-rate 0.3
+
+mean=103.83 and variance=36.87
+
+Part D
+
+Find the P-values for model in part (a).
+
+P-value of Depth of Cut & Feedrate Interaction: 0.01797(significant)
+
+P-value of Depth of Cut : 1.652e-07 (significant)
+
+P-value of Feedrate : 1.086e-09(significant)
+
+## QUESTION 5.34
+
+Using the model equation of
+
+$Yijkl$=$\mu$+$\alpha i$+$\beta j$+$\gamma k$+$\alpha\beta ij$+$\varepsilon ijk$
+
+$\gamma k$=block effect
+
+where $\varepsilon ijk$ $\sim \left( 0,\sigma^{2} \right)$
+
+Stating our null and alternative hypothesis we have
+
+Null hypothesis for interaction effects are
+
+$\alpha\beta ij=0$ for all ij
+
+Alternative hypothesis for interaction effects are
+
+$\alpha\beta ij\neq 0$ for some ij
+
+Main effect hypothesis
+
+For Null hypothesis
+
+$\alpha i=0$ for all i
+
+for alternative hypothesis
+
+$\alpha i\neq 0$ for some i
+
+Null hypothesis
+
+$\beta j=0$ for all j
+
+$\beta j\neq 0$ for some j
+
+```{r}
+Feedrate<- c(rep(1,12), rep(2,12), rep(3,12))
+cut<- rep(seq(1,4),9)
+block<- c(rep(1,4),rep(2,4),rep(3,4),rep(1,4), rep(2,4),rep(3,4),rep(1,4),rep(2,4),rep(3,4))
+obs<- c(74, 79, 82, 99, 64, 68, 88, 104, 60, 73, 92,96, 92, 98, 99,104, 86, 104, 108, 110, 88, 88, 95,99, 99, 104, 108, 114, 98, 99, 110, 111, 102, 95, 99, 107)
+dat<- data.frame(cut,Feedrate,block,obs)
+```
+
+```{r}
+library(GAD)
+Feedrate<- as.fixed(Feedrate)
+cut <- as.fixed(cut)
+block <- as.fixed(block)
+Model2<- aov(obs~cut+Feedrate+block+cut*Feedrate)
+summary(Model2)
+```
+
+Checking out the p-value(0.00726\<0.05) of the interaction effects, we can see there exists an interaction effect between the two factors.
+
+We can also see that the p-values of the main effects are also significant
+
+p-value of depth of cut - 4.89e-08 (highly significant at alpha=0.05)
+
+p-value of feed-rate - 3.64e-10 ((highly significant at alpha=0.05)
+
+## The variance components of blocks is
+
+Msb=90.3
+
+Mse=23.1
+
+i=3 , j=4
+
+i\*j=12
+
+```{r}
+var<- (90.3-23.1)/12
+var
+```
+
+The variance of the block= 5.6
+
+from our model the p-value of blocks is 0.03532 which is less than our reference significant level of alpha(0.05), we can confidently state that blocking had a significant effect in this case and therefore we conclude that it was important to block.
+
+## Interaction plot
+
+```{r}
+interaction.plot(Feedrate,cut,obs)
+```
+
+The above interaction plot concludes that we have an interaction effects between the two factors considered (depth of cut and feed-rate).
+
+## Question 13.5
+
+Using the model equation of
+
+$Yijk$=$\mu$+$\alpha i$+$\beta j$+$\alpha\beta ij$+$\varepsilon ijk$
+
+where $\varepsilon ijk$ $\sim \left( 0,\sigma^{2} \right)$
+
+Stating our null and alternative hypothesis we have
+
+Null hypothesis for interaction effects are
+
+$\sigma^{2}_{\alpha\beta}=0$
+
+Alternative hypothesis for interaction effects are
+
+$\sigma^{2}_{\alpha\beta}\neq 0$
+
+Main effects (hypothesis)
+
+Null hypothesis
+
+$\sigma^{2}_{\alpha}=0$
+
+Alternative hypothesis
+
+$\sigma^{2}_{\alpha}\neq 0$
+
+Null hypothesis
+
+$\sigma^{2}_{\beta}=0$
+
+Alternative hypothesis
+
+$\sigma^{2}_{\beta}\neq 0$
+
+```{r}
+p<- c(rep(1,9), rep(2,9))
+t<- rep(seq(1,3),6)
+obs<- c(570, 1063, 565, 565, 1080, 510, 583, 1043, 590, 528, 988, 526, 547, 1026,
+              538, 521, 1004, 532)
+p<- as.random(p)
+t<- as.fixed(t)
+dat<- data.frame(p,t,obs)
+```
+
+```{r}
+library(GAD)
+model3<- aov(obs~p+t+p*t,data=dat)
+GAD::gad(model3)
+```
+
+Checking out the p-value(0.4271101 \>0.05) of the interaction effects(position and temperature), we can see there exists no interaction effect between the two factors.(we are failing to reject the null hypothesis)
+
+But
+
+We can also that the p-values of the main effects are all significant
+
+p-value of position - 0.0017624 (highly significant at alpha=0.05)
+
+p-value of temperature - 0.0008647 (highly significant at alpha=0.05)
+
+## Question 13.6
+
+Using the model equation of
+
+$Yijk$=$\mu$+$\alpha i$+$\beta j$+$\alpha\beta ij$+$\varepsilon ijk$
+
+where $\varepsilon ijk$ $\sim \left( 0,\sigma^{2} \right)$
+
+Stating our null and alternative hypothesis we have
+
+Null hypothesis for interaction effects are
+
+$\sigma^{2}_{\alpha\beta}=0$
+
+Alternative hypothesis for interaction effects are
+
+$\sigma^{2}_{\alpha\beta}\neq 0$
+
+Main effects (hypothesis)
+
+Null hypothesis
+
+$\sigma^{2}_{\alpha}=0$
+
+Alternative hypothesis
+
+$\sigma^{2}_{\alpha}\neq 0$
+
+Null hypothesis
+
+$\sigma^{2}_{\beta}=0$
+
+Alternative hypothesis
+
+$\sigma^{2}_{\beta}\neq 0$
+
+
+
+```{r}
+parts<- c(rep(1,6), rep(2,6), rep(3,6), rep(4,6), rep(5,6), rep(6,6), rep(7,6), rep(8,6), rep(9,6), rep(10,6))
+operators<- c(rep(1,3), rep(2,3), rep(1,3), rep(2,3),rep(1,3), rep(2,3), rep(1,3),rep(2,3), rep(1,3), rep(2,3), rep(1,3),rep(2,3), rep(1,3), rep(2,3),rep(1,3), rep(2,3), rep(1,3), rep(2,3), rep(1,3), rep(2,3))
+obs<- c(50, 49, 50, 50, 48, 51, 52, 52, 51, 51, 51, 51, 53, 50, 50, 54, 52, 51,49, 51, 50, 48, 50, 51, 48, 49, 48, 48, 49, 48, 52, 50, 50, 52, 50, 50,51, 51, 51, 51, 50, 50, 52, 50, 49, 53, 48, 50, 50, 51, 50, 51, 48, 49,47, 46, 49, 46, 47, 48)
+parts<-as.random(parts)
+operators<- as.fixed(operators)
+dat3<- data.frame(parts,operators,obs)
+dat3
+```
+
+```{r}
+library(GAD)
+model4<- aov(obs~parts*operators,data=dat3)
+gad(model4)
+interaction.plot(operators,parts,obs)
+
+```
+
+Checking out the p-value (0.9270\>0.05) of the interaction effects(operator and parts), we can see there exists no interaction effect between the two factors.(we are failing to reject the null hypothesis)
+
+But
+
+p-value of parts - 3.216e-06 (highly significant at alpha=0.05)
+
+p-value of operator - 0.4269 (insignificant at alpha=0.05)

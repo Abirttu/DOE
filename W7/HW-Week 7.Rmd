@@ -1,0 +1,189 @@
+---
+title: "HW-Week 7"
+author: "Md Ariful Haque Miah"
+date: "10/13/2022"
+output:
+  html_document:
+    df_print: paged
+---
+Problem 4.3
+
+```{r}
+library(GAD)
+chemical<-c(rep(1,5),rep(2,5),rep(3,5),rep(4,5))
+bolt<-c(rep(seq(1,5),4))
+obs <- c(73,68,74,71,67,73,67,75,72,70,75,68,78,73,68,73,71,75,75,69)
+chemical<-as.fixed(chemical)
+bolt<-as.fixed(bolt)
+obs <- as.numeric(obs)
+dat <- data.frame(chemical,bolt,obs)
+dat
+str(dat)
+model<-lm(obs~chemical+bolt,data=dat) 
+gad(model)
+```
+
+Hypothesis:
+
+$H_0:\tau_i = 0$ for all i
+
+$H_a:\tau_i \neq 0$ for some i
+
+Model Equation:
+
+$y_{ij}=\mu+\tau_i+\beta_j+e_{ij}$
+
+where $\mu$ = grand mean, $\tau_i$ = Chemical effect,
+$\beta_j$ = Bolt (block), $e_{ij}$ = random error ~ N(0,$\sigma^2$)
+
+P value (0.1211) > $\alpha$ (0.05) hence we fail to reject $H_0$.
+
+There is no difference among the four chemical agents at $\alpha$ = 0.05 level.
+
+Problem 4.16
+
+Calculate model parameters $\tau_i$:
+Formula: $\tau_i$ = $\mu_i-\mu$
+
+```{r}
+obs <- c(73,68,74,71,67,73,67,75,72,70,75,68,78,73,68,73,71,75,75,69)
+mean(obs)
+tau_1 <- mean(obs[1:5])-mean(obs)
+tau_1
+tau_2 <- mean(obs[6:10])-mean(obs)
+tau_2
+tau_3 <- mean(obs[11:15])-mean(obs)
+tau_3
+tau_4 <- mean(obs[16:20])-mean(obs)
+tau_4
+```
+
+$\tau_1$ = -1.15, $\tau_2$ = -0.35, $\tau_3$ = 0.65, $\tau_4$ = 0.85
+
+Calculate model parameters $\beta_j$:
+Formula: $\beta_j$ = $\mu_j-\mu$
+
+```{r}
+obs <- c(73,68,74,71,67,73,67,75,72,70,75,68,78,73,68,73,71,75,75,69)
+beta_1 <- mean(c(73,73,75,73))-mean(obs)
+beta_1
+beta_2 <- mean(c(68,67,68,71))-mean(obs)
+beta_2
+beta_3 <- mean(c(74,75,78,75))-mean(obs)
+beta_3
+beta_4 <- mean(c(71,72,73,75))-mean(obs)
+beta_4
+beta_5 <- mean(c(67,70,68,69))-mean(obs)
+beta_5
+```
+
+$\beta_1$ = 1.75, $\beta_2$ = -3.25, $\beta_3$ = 3.75, $\beta_4$ = 1, $\beta_5$ = -3.25
+
+Problem 4.22
+
+```{r}
+library(GAD)
+batch <- c(rep(1,5),rep(2,5),rep(3,5),rep(4,5),rep(5,5))
+day <- c(rep(seq(1,5),5))
+ingr <- c("A","B","D","C","E",
+         "C","E","A","D","B",
+         "B","A","C","E","D",
+         "D","C","E","B","A",
+         "E","D","B","A","C")
+obs <- c(8,7,1,7,3,
+         11,2,7,3,8,
+         4,9,10,1,5,
+         6,8,6,6,10,
+         4,2,3,8,8)
+batch <- as.fixed(batch)
+day <- as.fixed(day)
+ingr <- as.fixed(ingr)
+obs <- as.numeric(obs)
+data <- data.frame(batch,day,ingr,obs)
+data
+str(data)
+model <- aov(obs~batch+day+ingr, data=data)
+summary(model)
+```
+
+Hypothesis 
+$H_0$: $\tau_i$ = 0 for all i
+
+$H_a$: $\tau_i$ $\neq$ 0 for some i, i=1,2,3,4,5
+
+Model equation: $X_{ijk}$ = $\mu + \tau_i + \beta_j + \alpha_k + e_{ijk}$
+
+where, $\mu$=grand mean, $\tau_i$=Ingredients effect, $\beta_j$ = Batch (block 1)
+$\alpha_k$ = Day (block 2), $e_{ijk}$ = random error ~N(0,$\sigma^2$)
+
+Conclusions:
+
+Hence the p value (0.000488) of ingredients is highly significant and less than
+$\alpha$=0.05 so we reject the null hypothesis $H_0$.
+
+Therefore the effect of five different ingredients (A,B,C,D,E) on the reaction time
+of a chemical process is significantly different. 
+
+Source Code
+
+```{r eval=FALSE}
+library(GAD)
+chemical<-c(rep(1,5),rep(2,5),rep(3,5),rep(4,5))
+bolt<-c(rep(seq(1,5),4))
+obs <- c(73,68,74,71,67,73,67,75,72,70,75,68,78,73,68,73,71,75,75,69)
+chemical<-as.fixed(chemical)
+bolt<-as.fixed(bolt)
+obs <- as.numeric(obs)
+dat <- data.frame(chemical,bolt,obs)
+dat
+str(dat)
+model<-lm(obs~chemical+bolt,data=dat) 
+gad(model)
+
+obs <- c(73,68,74,71,67,73,67,75,72,70,75,68,78,73,68,73,71,75,75,69)
+mean(obs)
+tau_1 <- mean(obs[1:5])-mean(obs)
+tau_1
+tau_2 <- mean(obs[6:10])-mean(obs)
+tau_2
+tau_3 <- mean(obs[11:15])-mean(obs)
+tau_3
+tau_4 <- mean(obs[16:20])-mean(obs)
+tau_4
+
+obs <- c(73,68,74,71,67,73,67,75,72,70,75,68,78,73,68,73,71,75,75,69)
+beta_1 <- mean(c(73,73,75,73))-mean(obs)
+beta_1
+beta_2 <- mean(c(68,67,68,71))-mean(obs)
+beta_2
+beta_3 <- mean(c(74,75,78,75))-mean(obs)
+beta_3
+beta_4 <- mean(c(71,72,73,75))-mean(obs)
+beta_4
+beta_5 <- mean(c(67,70,68,69))-mean(obs)
+beta_5
+
+library(GAD)
+batch <- c(rep(1,5),rep(2,5),rep(3,5),rep(4,5),rep(5,5))
+day <- c(rep(seq(1,5),5))
+ingr <- c("A","B","D","C","E",
+         "C","E","A","D","B",
+         "B","A","C","E","D",
+         "D","C","E","B","A",
+         "E","D","B","A","C")
+obs <- c(8,7,1,7,3,
+         11,2,7,3,8,
+         4,9,10,1,5,
+         6,8,6,6,10,
+         4,2,3,8,8)
+batch <- as.fixed(batch)
+day <- as.fixed(day)
+ingr <- as.fixed(ingr)
+obs <- as.numeric(obs)
+data <- data.frame(batch,day,ingr,obs)
+data
+str(data)
+model <- aov(obs~batch+day+ingr, data=data)
+summary(model)
+```
+

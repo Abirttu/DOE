@@ -1,0 +1,91 @@
+# Flipped Assignment 01
+#Problem No 1
+getwd()
+Name <- c("Frank","Bob","Sally","Susan","Joan","Bill","Richard","Jane","Jill","John")
+Name <- as.character(Name)
+str(Name)
+Age <- c(34,28,19,28,30,47,24,34,32,64)
+Age <- as.numeric(Age)
+str(Age)
+BMI <- c(24.2,18.3,15.4,22.7,29.2,32.4,21.0,40.4,24.8,34.4)
+BMI <- as.numeric(BMI)
+str(BMI)
+FactorA <- c(-1,-1,-1,-1,-1,1,1,1,1,1)
+str(FactorA)
+FactorB <- c(1,-1,1,-1,1,-1,1,-1,1,-1)
+str(FactorB)
+dat <- data.frame(Name,Age,BMI,FactorA,FactorB)
+print(dat)
+# Answer to the ques No 1.a.
+dat$FactorAB <- FactorA*FactorB
+print(dat)
+# Answer to the ques No 1.b.
+dat$FactorC <- c(-1,-1,1,1,-1,-1,1,1,-1,-1)
+print(dat)
+# Answer to the ques No 1.c.
+dat$FactorABC <- FactorA*FactorB*dat$FactorC
+print(dat)
+# Answer to the ques No 1.d.
+dat$FactorA <- as.factor(dat$FactorA)
+str(dat$FactorA)
+dat$FactorB <- as.factor(dat$FactorB)
+str(dat$FactorB)
+dat$FactorAB <- as.factor(dat$FactorAB)
+str(dat$FactorAB)
+dat$FactorC <- as.factor(dat$FactorC)
+str(dat$FactorC)
+dat$FactorABC <- as.factor(dat$FactorABC)
+str(dat$FactorABC)
+#Answer to the problem No 2
+dat$Smoking <- c("Yes","No","No","Yes","Yes","No","Yes","Yes","No","Yes")
+dat$Smoking <- as.factor(dat$Smoking)
+str(dat$Smoking)
+print(dat)
+#Answer to the problem No 3
+dat[7,3] <- c(NA)
+print(dat)
+#Answer to the problem No 4
+log_BMI <- log(dat[,3])
+dat <- data.frame(dat,log_BMI)
+print(dat)
+#Answer to the problem No 5
+dat2 <- dat[,-c(1:3,7:9)]
+print(dat2)
+#Answer to the problem No 6
+dat3 <- dat2[c(1:5),]
+print(dat3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

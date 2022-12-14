@@ -1,0 +1,81 @@
+---
+title: "FA 06 Gr 05"
+author: "Md Ariful Haque Miah"
+date: "9/15/2022"
+output: html_document
+---
+```{r}
+Aspirin_A <- c(15,26,13,28,17,20,7,36,12,18)
+Aspirin_B <- c(13,20,10,21,17,22,5,30,7,11)
+?t.test
+t.test(Aspirin_A,Aspirin_B,paired=TRUE,alternative = c("two.sided"))
+
+# Answer to the ques no 1.a.
+# Null Hypothesis: H0: u1 = u2 or u1 - u2 = 0
+# Alternative Hypothesis: Ha: u1 != u2 or u1 - u2 != 0
+
+# Answer to the ques no 1.b.
+# P-value is 0.005121 < 0.05 so we reject H0 which means mean concentration of 
+# the two drugs are not the same.
+
+t.test(Aspirin_A,Aspirin_B,paired=FALSE,alternative = c("two.sided"))
+
+# Answer to the ques no 1.c.
+# P-value is 0.3401 > 0.05 so we fail to reject H0 which means mean concentration of 
+# the two drugs are the same.
+
+# Answer to the ques no 2
+ActiveExercise <- c(9.50,10.00,9.75,9.75,9.00,13.0)
+NoExercise <- c(11.50,12.00,13.25,11.50,13.00,9.00)
+
+# Answer to the ques no 2.a.
+# Null Hypothesis: H0: u1 = u2 or u1 - u2 = 0
+# Alternative Hypothesis: Ha: u1 != u2 or u1 - u2 != 0
+
+qqnorm(ActiveExercise,main="NPP of Active Exercise",col="blue")
+qqline(ActiveExercise)
+
+qqnorm(NoExercise,main="NPP of No Exercise",col="pink")
+qqline(NoExercise)
+boxplot(ActiveExercise,NoExercise,main ="Exercise Box Plot",names = c("Active Exercise", "No Exercise"),ylab="time in month's")
+
+# Answer to the ques no 2.b.
+# As we can see, we don’t have enough data points to make any claims about normality 
+# and constant variances. If we had more data points , then using normal probability 
+# plot we could have made some decision about the data’s probability distribution. 
+# Hence we might want to use Non Parametric Test to analyze data.
+
+?wilcox.test
+wilcox.test(ActiveExercise,NoExercise,alternative ="less")
+
+# Answer to the ques no 2.c.
+# As p value is 0.08523 > 0.05 . Hence we fail to reject  Null Hypotheses and say that mean of 
+# Active Exercise and No Exercise are the same.
+```
+Source Code
+```{r eval=FALSE}
+Aspirin_A <- c(15,26,13,28,17,20,7,36,12,18)
+Aspirin_B <- c(13,20,10,21,17,22,5,30,7,11)
+?t.test
+t.test(Aspirin_A,Aspirin_B,paired=TRUE,alternative = c("two.sided"))
+
+
+t.test(Aspirin_A,Aspirin_B,paired=FALSE,alternative = c("two.sided"))
+
+
+ActiveExercise <- c(9.50,10.00,9.75,9.75,9.00,13.0)
+NoExercise <- c(11.50,12.00,13.25,11.50,13.00,9.00)
+
+qqnorm(ActiveExercise,main="NPP of Active Exercise",col="blue")
+qqline(ActiveExercise)
+
+qqnorm(NoExercise,main="NPP of No Exercise",col="pink")
+qqline(NoExercise)
+boxplot(ActiveExercise,NoExercise,main ="Exercise Box Plot",names = c("Active Exercise", "No Exercise"),ylab="time in month's")
+
+?wilcox.test
+wilcox.test(ActiveExercise,NoExercise,alternative ="less")
+
+```
+
+
